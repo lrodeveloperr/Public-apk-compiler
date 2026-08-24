@@ -1,0 +1,157 @@
+ำโฆษณาออก","monthlyPlan":"รายเดือน"}},"ja":{"name":"日本語","dir":"ltr","s":{"home":"ホーム","boards":"ボード","new":"新規","live":"ライブ","settings":"設定","active":"稼働中","quick":"クイック","recent":"最近","now":"今","wait":"待機","next":"次","done":"完了","template":"テンプレート","paste":"貼り付け","name":"名前","time":"時刻","station":"ステーション","notes":"メモ","tasks":"タスク","timing":"タイミング","manual":"手動","target":"目標","custom":"カスタム","save":"保存","upcoming":"予定","all":"すべて","pause":"一時停止","resume":"再開","alerts":"アラート","awake":"画面を常時表示","compact":"コンパクト","haptics":"触覚","language":"言語","today":"今日","onTrack":"順調","open":"開く","continue":"続ける","start":"開始","details":"詳細","back":"戻る","review":"確認","check":"チェック","ready":"準備完了","newTask":"新しいタスク","edit":"編集","tomorrow":"明日","dinner":"ディナー","brunch":"ブランチ","lateNight":"深夜","lunch":"ランチ","banquet":"宴会","stationHot":"ホットステーション","stationCold":"コールドプレップ","stationPastry":"ペストリー","stationSandwich":"サンドイッチ","stationBanquet":"宴会","taskRoastVeg":"野菜をロースト","taskRestChicken":"鶏肉を休ませる","taskHerbDressing":"ハーブドレッシングを作る","taskWarmPlates":"皿を温める","taskPortionProteins":"たんぱく質をポーション分け","taskPrepGarnishes":"付け合わせを準備","taskWashGreens":"葉野菜を洗う","taskSanitize":"ステーションを消毒","have":"在庫","need":"必要","prep":"準備","priority":"優先","undo":"元に戻す","show":"表示","hide":"非表示","repeat":"繰り返す","area":"エリア","welcome":"ようこそ","onDevice":"端末内","noAccount":"アカウント不要","privacy":"プライバシー","ads":"広告","boardsStay":"ボードはこの端末に保存されます","googleAds":"Google は広告のために端末情報とアプリ利用データを使用します","privacyChoices":"プライバシー設定","terms":"利用規約","support":"サポート","safety":"安全","legal":"プライバシーと法的情報","manageSub":"サブスクリプション管理","deleteData":"ローカルデータを削除","steps":"3 ステップ","linkPending":"公開リリース用リンクが必要です","managedGoogle":"必要な地域では Google が管理します","cancel":"キャンセル","delete":"削除","deleteConfirm":"ローカルのアプリデータを削除しますか？","about":"情報","adults18":"18歳以上","removeAds":"広告を削除","monthlyPlan":"月額"}},"ko":{"name":"한국어","dir":"ltr","s":{"home":"홈","boards":"보드","new":"새로 만들기","live":"라이브","settings":"설정","active":"활성","quick":"빠른 실행","recent":"최근","now":"지금","wait":"대기","next":"다음","done":"완료","template":"템플릿","paste":"붙여넣기","name":"이름","time":"시간","station":"스테이션","notes":"메모","tasks":"작업","timing":"타이밍","manual":"수동","target":"목표","custom":"사용자 지정","save":"저장","upcoming":"예정","all":"전체","pause":"일시정지","resume":"재개","alerts":"알림","awake":"화면 켜짐","compact":"컴팩트","haptics":"햅틱","language":"언어","today":"오늘","onTrack":"일정대로","open":"열기","continue":"계속","start":"시작","details":"세부정보","back":"뒤로","review":"검토","check":"확인","ready":"준비됨","newTask":"새 작업","edit":"편집","tomorrow":"내일","dinner":"저녁","brunch":"브런치","lateNight":"늦은 밤","lunch":"점심","banquet":"연회","stationHot":"핫 스테이션","stationCold":"콜드 프렙","stationPastry":"페이스트리","stationSandwich":"샌드위치","stationBanquet":"연회","taskRoastVeg":"채소 굽기","taskRestChicken":"닭고기 레스팅","taskHerbDressing":"허브 드레싱 만들기","taskWarmPlates":"접시 데우기","taskPortionProteins":"단백질 소분하기","taskPrepGarnishes":"가니시 준비","taskWashGreens":"잎채소 씻기","taskSanitize":"스테이션 소독","have":"보유","need":"필요","prep":"준비","priority":"우선순위","undo":"실행 취소","show":"표시","hide":"숨기기","repeat":"반복","area":"구역","welcome":"환영합니다","onDevice":"기기에 저장","noAccount":"계정 불필요","privacy":"개인정보","ads":"광고","boardsStay":"보드는 이 기기에 저장됩니다","googleAds":"Google은 광고를 위해 기기 및 앱 사용 데이터를 사용합니다","privacyChoices":"개인정보 선택","terms":"이용약관","support":"지원","safety":"안전","legal":"개인정보 및 법률","manageSub":"구독 관리","deleteData":"로컬 데이터 삭제","steps":"3단계","linkPending":"공개 출시 링크가 필요합니다","managedGoogle":"필요한 경우 Google에서 관리합니다","cancel":"취소","delete":"삭제","deleteConfirm":"로컬 앱 데이터를 삭제할까요?","about":"정보","adults18":"성인 18+","removeAds":"광고 제거","monthlyPlan":"월간"}},"zh-Hans":{"name":"简体中文","dir":"ltr","s":{"home":"首页","boards":"看板","new":"新建","live":"实时","settings":"设置","active":"进行中","quick":"快捷","recent":"最近","now":"现在","wait":"等待","next":"下一步","done":"完成","template":"模板","paste":"粘贴","name":"名称","time":"时间","station":"工作站","notes":"备注","tasks":"任务","timing":"计时","manual":"手动","target":"目标","custom":"自定义","save":"保存","upcoming":"即将开始","all":"全部","pause":"暂停","resume":"继续","alerts":"提醒","awake":"保持亮屏","compact":"紧凑","haptics":"触感","language":"语言","today":"今天","onTrack":"按计划","open":"打开","continue":"继续","start":"开始","details":"详情","back":"返回","review":"检查","check":"核对","ready":"就绪","newTask":"新任务","edit":"编辑","tomorrow":"明天","dinner":"晚餐","brunch":"早午餐","lateNight":"深夜","lunch":"午餐","banquet":"宴会","stationHot":"热菜工位","stationCold":"冷菜准备","stationPastry":"甜点","stationSandwich":"三明治","stationBanquet":"宴会","taskRoastVeg":"烤蔬菜","taskRestChicken":"静置鸡肉","taskHerbDressing":"制作香草酱汁","taskWarmPlates":"预热餐盘","taskPortionProteins":"分装蛋白质","taskPrepGarnishes":"准备装饰配料","taskWashGreens":"清洗叶菜","taskSanitize":"消毒工位","have":"现有","need":"需要","prep":"准备","priority":"优先","undo":"撤销","show":"显示","hide":"隐藏","repeat":"重复","area":"区域","welcome":"欢迎","onDevice":"存储在设备上","noAccount":"无需账户","privacy":"隐私","ads":"广告","boardsStay":"看板保存在此设备上","googleAds":"Google 会使用设备和应用使用数据投放广告","privacyChoices":"隐私选项","terms":"条款","support":"支持","safety":"安全","legal":"隐私与法律","manageSub":"管理订阅","deleteData":"删除本地数据","steps":"3 步","linkPending":"需要公开发布链接","managedGoogle":"在需要时由 Google 管理","cancel":"取消","delete":"删除","deleteConfirm":"删除本地应用数据？","about":"关于","adults18":"成人 18+","removeAds":"移除广告","monthlyPlan":"每月"}},"zh-Hant":{"name":"繁體中文","dir":"ltr","s":{"home":"首頁","boards":"看板","new":"新增","live":"即時","settings":"設定","active":"進行中","quick":"快捷","recent":"最近","now":"現在","wait":"等待","next":"下一步","done":"完成","template":"範本","paste":"貼上","name":"名稱","time":"時間","station":"工作站","notes":"備註","tasks":"任務","timing":"計時","manual":"手動","target":"目標","custom":"自訂","save":"儲存","upcoming":"即將開始","all":"全部","pause":"暫停","resume":"繼續","alerts":"提醒","awake":"保持螢幕開啟","compact":"精簡","haptics":"觸覺","language":"語言","today":"今天","onTrack":"按計畫","open":"開啟","continue":"繼續","start":"開始","details":"詳情","back":"返回","review":"檢查","check":"核對","ready":"就緒","newTask":"新任務","edit":"編輯","tomorrow":"明天","dinner":"晚餐","brunch":"早午餐","lateNight":"深夜","lunch":"午餐","banquet":"宴會","stationHot":"熱菜工作站","stationCold":"冷菜準備","stationPastry":"甜點","stationSandwich":"三明治","stationBanquet":"宴會","taskRoastVeg":"烤蔬菜","taskRestChicken":"靜置雞肉","taskHerbDressing":"製作香草醬汁","taskWarmPlates":"預熱餐盤","taskPortionProteins":"分裝蛋白質","taskPrepGarnishes":"準備裝飾配料","taskWashGreens":"清洗葉菜","taskSanitize":"消毒工作站","have":"現有","need":"需要","prep":"準備","priority":"優先","undo":"復原","show":"顯示","hide":"隱藏","repeat":"重複","area":"區域","welcome":"歡迎","onDevice":"儲存在裝置上","noAccount":"不需帳號","privacy":"隱私權","ads":"廣告","boardsStay":"看板保存在此裝置上","googleAds":"Google 會使用裝置和 App 使用資料投放廣告","privacyChoices":"隱私權選項","terms":"條款","support":"支援","safety":"安全","legal":"隱私權與法律","manageSub":"管理訂閱","deleteData":"刪除本機資料","steps":"3 步","linkPending":"需要公開發布連結","managedGoogle":"必要時由 Google 管理","cancel":"取消","delete":"刪除","deleteConfirm":"刪除本機 App 資料？","about":"關於","adults18":"成人 18+","removeAds":"移除廣告","monthlyPlan":"每月"}},"ru":{"name":"Русский","dir":"ltr","s":{"home":"Главная","boards":"Доски","new":"Новая","live":"В работе","settings":"Настройки","active":"Активно","quick":"Быстро","recent":"Недавние","now":"Сейчас","wait":"Ожидание","next":"Далее","done":"Готово","template":"Шаблон","paste":"Вставить","name":"Название","time":"Время","station":"Станция","notes":"Заметки","tasks":"Задачи","timing":"Тайминг","manual":"Вручную","target":"Цель","custom":"Свой","save":"Сохранить","upcoming":"Предстоящие","all":"Все","pause":"Пауза","resume":"Продолжить","alerts":"Оповещения","awake":"Экран включён","compact":"Компактно","haptics":"Тактильный отклик","language":"Язык","today":"Сегодня","onTrack":"По плану","open":"Открыть","continue":"Продолжить","start":"Начать","details":"Подробности","back":"Назад","review":"Проверить","check":"Контроль","ready":"Готово","newTask":"Новая задача","edit":"Изменить","tomorrow":"Завтра","dinner":"Ужин","brunch":"Бранч","lateNight":"Поздний вечер","lunch":"Обед","banquet":"Банкет","stationHot":"Горячая станция","stationCold":"Холодная заготовка","stationPastry":"Кондитерская","stationSandwich":"Сэндвичи","stationBanquet":"Банкет","taskRoastVeg":"Запечь овощи","taskRestChicken":"Дать курице отдохнуть","taskHerbDressing":"Приготовить травяную заправку","taskWarmPlates":"Подогреть тарелки","taskPortionProteins":"Разделить белковые продукты на порции","taskPrepGarnishes":"Подготовить гарниры","taskWashGreens":"Вымыть зелень","taskSanitize":"Продезинфицировать станцию","have":"Есть","need":"Нужно","prep":"Подготовить","priority":"Приоритет","undo":"Отменить","show":"Показать","hide":"Скрыть","repeat":"Повторить","area":"Зона","welcome":"Добро пожаловать","onDevice":"На устройстве","noAccount":"Без аккаунта","privacy":"Конфиденциальность","ads":"Реклама","boardsStay":"Доски остаются на этом устройстве","googleAds":"Google использует данные устройства и использования приложения для рекламы","privacyChoices":"Настройки конфиденциальности","terms":"Условия","support":"Поддержка","safety":"Безопасность","legal":"Конфиденциальность и правовая информация","manageSub":"Управлять подпиской","deleteData":"Удалить локальные данные","steps":"3 шага","linkPending":"Нужна публичная ссылка для релиза","managedGoogle":"Управляется Google, где это требуется","cancel":"Отмена","delete":"Удалить","deleteConfirm":"Удалить локальные данные приложения?","about":"О приложении","adults18":"Для взрослых 18+","removeAds":"Убрать рекламу","monthlyPlan":"Ежемесячно"}}};
+function normalizeLocale(raw){
+  const v=(raw||"en").replace("_","-");
+  if(I18N[v])return v;
+  const low=v.toLowerCase();
+  if(low.startsWith("zh-tw")||low.startsWith("zh-hk")||low.startsWith("zh-hant"))return "zh-Hant";
+  if(low.startsWith("zh"))return "zh-Hans";
+  if(low.startsWith("nb")||low.startsWith("no"))return "nb";
+  if(low.startsWith("fil")||low.startsWith("tl"))return "fil";
+  const base=v.split("-")[0];
+  return I18N[base]?base:"en";
+}
+let uiLocale=normalizeLocale(localStorage.getItem("kpb-ui-locale")||navigator.language||"en");
+
+function nf(code,opts={}){return new Intl.NumberFormat(code,opts)}
+function formatClock(code,value){
+  const [h,m]=value.split(":").map(Number);
+  const d=new Date(2000,0,1,h,m,0,0);
+  return new Intl.DateTimeFormat(code,{hour:"numeric",minute:"2-digit"}).format(d);
+}
+function formatMinutes(code,total){
+  const hours=Math.floor(Number(total)/60),mins=Number(total)%60;
+  const parts=[];
+  if(hours)parts.push(new Intl.NumberFormat(code,{style:"unit",unit:"hour",unitDisplay:"narrow"}).format(hours));
+  if(mins||!hours)parts.push(new Intl.NumberFormat(code,{style:"unit",unit:"minute",unitDisplay:"narrow"}).format(mins));
+  return parts.join(" ");
+}
+function formatCountdown(code,totalSeconds){
+  const m=Math.floor(Number(totalSeconds)/60),s=Number(totalSeconds)%60;
+  const two=new Intl.NumberFormat(code,{minimumIntegerDigits:2,useGrouping:false});
+  return `${two.format(m)}:${two.format(s)}`;
+}
+function applyLocaleFormatting(code){
+  document.querySelectorAll("[data-time]").forEach(el=>el.textContent=formatClock(code,el.dataset.time));
+  document.querySelectorAll("[data-number]").forEach(el=>el.textContent=nf(code).format(Number(el.dataset.number)));
+  document.querySelectorAll("[data-number-decimal]").forEach(el=>el.textContent=nf(code,{maximumFractionDigits:1}).format(Number(el.dataset.numberDecimal)));
+  document.querySelectorAll("[data-percent]").forEach(el=>el.textContent=nf(code,{style:"percent",maximumFractionDigits:0}).format(Number(el.dataset.percent)));
+  document.querySelectorAll("[data-duration-minutes]").forEach(el=>el.textContent=formatMinutes(code,Number(el.dataset.durationMinutes)));
+  document.querySelectorAll("[data-duration-seconds]").forEach(el=>el.textContent=formatCountdown(code,Number(el.dataset.durationSeconds)));
+}
+
+function applyLocale(code){
+  code=normalizeLocale(code);
+  uiLocale=code;
+  const pack=I18N[code];
+  document.documentElement.lang=code;
+  document.documentElement.dir=pack.dir;
+  document.body.dir=pack.dir;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const k=el.dataset.i18n;
+    if(!(k in pack.s))throw new Error(`Missing ${code}.${k}`);
+    el.textContent=pack.s[k];
+  });
+  document.querySelectorAll("[data-i18n-aria]").forEach(el=>{
+    const k=el.dataset.i18nAria;
+    if(!(k in pack.s))throw new Error(`Missing ${code}.${k}`);
+    el.setAttribute("aria-label",pack.s[k]);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el=>{
+    const k=el.dataset.i18nPlaceholder;
+    if(!(k in pack.s))throw new Error(`Missing ${code}.${k}`);
+    el.setAttribute("placeholder",pack.s[k]);
+  });
+  applyLocaleFormatting(code);
+  const sel=document.getElementById("languageSelect");
+  if(sel)sel.value=code;
+  const p=document.getElementById("pauseAll");
+  if(p)p.textContent=paused?pack.s.resume:pack.s.pause;
+  localStorage.setItem("kpb-ui-locale",code);
+  if(typeof renderCreateStep==="function")renderCreateStep();
+  const dt=document.getElementById("doneToggle");
+  if(dt&&doneItems)dt.textContent=doneItems.hasAttribute("hidden")?pack.s.show:pack.s.hide;
+  const activeScreen=document.querySelector(".screen.active");
+  updateTopTitle(activeScreen?activeScreen.id.replace("screen-",""):"home");
+  if(typeof renderBoardsView==="function")renderBoardsView();
+  if(typeof renderActiveBoardContext==="function")renderActiveBoardContext();
+}
+function buildLanguageMenu(){
+  const sel=document.getElementById("languageSelect");
+  if(!sel)return;
+  sel.innerHTML="";
+  Object.entries(I18N).forEach(([code,pack])=>{
+    const o=document.createElement("option");
+    o.value=code;o.textContent=pack.name;sel.appendChild(o);
+  });
+  sel.value=uiLocale;
+  sel.addEventListener("change",()=>applyLocale(sel.value));
+}
+
+const titles={home:"Kitchen Prep Board",boards:"Boards",create:"New",live:"Live",settings:"Settings"};
+function updateTopTitle(v){
+  const t=document.getElementById("topTitle");
+  if(!t)return;
+  if(v==="home"){t.textContent="Kitchen Prep Board";return}
+  const key=({boards:"boards",create:"new",live:"live",settings:"settings"})[v];
+  if(key)t.textContent=I18N[uiLocale].s[key];
+}
+function setView(v){
+  document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));
+  const s=document.getElementById("screen-"+v);
+  if(s)s.classList.add("active");
+  document.querySelectorAll("[data-view]").forEach(x=>{
+    const nav=x.closest(".bottomnav")||x.closest(".railnav");
+    if(nav)x.classList.toggle("active",x.dataset.view===v);
+  });
+  updateTopTitle(v);
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(typeof window.kpbOnViewChange==="function")window.kpbOnViewChange(v);
+}
+document.addEventListener("click",e=>{
+  const v=e.target.closest("[data-view]");
+  if(v){
+    if(v.dataset.view==="create"&&typeof prepareNewBoardDraft==="function")prepareNewBoardDraft();
+    setView(v.dataset.view);return;
+  }
+  const sw=e.target.closest(".switch");
+  if(sw)sw.classList.toggle("on");
+});
+
+document.getElementById("addTask").onclick=()=>{
+  const list=document.getElementById("taskList");
+  const d=document.createElement("div");
+  d.className="task-card";
+  d.innerHTML='<span class="drag">⠿</span><div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#E7E2D9"/><circle cx="24" cy="24" r="10" fill="#89916A"/></svg></div><div class="grow"><div class="task-name" data-i18n="newTask"></div><div class="task-meta" data-i18n="edit"></div></div><span class="badge" data-duration-minutes="10">10</span>';
+  list.appendChild(d);
+  applyLocale(uiLocale);
+};
+document.querySelectorAll("#timingSeg button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#timingSeg button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+});
+
+const BOARDS_KEY="kpb-boards-v1";
+const VALID_BOARD_STATUS=new Set(["upcoming","active","completed"]);
+
+function kpbId(prefix="kpb"){
+  try{return `${prefix}-${crypto.randomUUID()}`}catch(_){return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`}
+}
+function cloneTasks(tasks){return tasks.map(t=>({...t}))}
+const DEMO_DINNER_TASKS=[
+  {id:"roast",nameKey:"taskRoastVeg",durationSeconds:501,durationMinutes:10,initialLane:"now"},
+  {id:"dressing",nameKey:"taskHerbDressing",durationSeconds:252,durationMinutes:5,initialLane:"now"},
+  {id:"chicken",nameKey:"taskRestChicken",durationSeconds:123,durationMinutes:15,initialLane:"waiting",waitAction:"check"},
+  {id:"plates",nameKey:"taskWarmPlates",durationSeconds:300,durationMinutes:10,initialLane:"waiting"},
+  {id:"proteins",nameKey:"taskPortionProteins",durationMinutes:10,initialLane:"next"},
+  {id:"garnish",nameKey:"taskPrepGarnishes",durationMinutes:8,initialLane:"next"},
+  {id:"greens",nameKey:"taskWashGreens",durationMinutes:5,initialLane:"done"},
+  {id:"sanitize",nameKey:"taskSanitize",durationMinutes:5,initialLane:"done"}
+];
+function seedBoards(){
+  const now=Date.now();
+  return [
+    {id:"demo-dinner",nameKey:"dinner",areaKey:"stationHot",time:"18:30",notes:"",timingMode:"target",status:"active",createdAt:now-7200000,initialRemainingSeconds:1124,tasks:cloneTasks(DEMO_DINNER_TASKS)},
+    {id:"demo-late-night",nameKey:"lateNight",areaKey:"stationSandwich",time:"22:30",notes:"",timingMode:"target",status:"upcoming",createdAt:now-3600000,tasks:cloneTasks(DEMO_DINNER_TASKS.slice(0,5)).map((t,i)=>({...t,id:`late-${i}`,initialLane:i<2?"now":"next"}))},
+    {id:"demo-lunch",nameKey:"lunch",areaKey:"stationHot",time:"11:30",notes:"",timingMode:"target",status:"upcoming",createdAt:now-1800000,tasks:cloneTasks(DEMO_DINNER_TASKS.slice(0,4)).map((t,i)=>({...t,id:`lunch-${i}`,initialLane:i<2?"now":"next",waitAction:undefined}))},
+    {id:"demo-brunch",nameKey:"brunch",areaKey:"stationPastry",time:"10:30",notes:"",timingMode:"target",status:"completed",createdAt:now-172800000,tasks:cloneTasks(DEMO_DINNER_TASKS.slice(0,4)).map((t,i)=>({...t,id:`brunch-${i}`,initialLane:"done",waitAction:undefined}))},
+    {id:"demo-banquet",nameKey:"banquet",areaKey:"stationBanquet",time:"19:00",notes:"",timingMode:"target",status:"completed",createdAt:now-259200000,tasks:cloneTasks(DEMO_DINNER_TASKS.slice(0,6)
