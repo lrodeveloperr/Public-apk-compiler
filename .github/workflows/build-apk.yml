@@ -1,0 +1,79 @@
+name: Build Kitchen Prep Board APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        shell: bash
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platform-tools" "platforms;android-37" "build-tools;36.0.0"
+
+      - name: Set up Gradle 9.5
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.5.0'
+
+      - name: Reconstruct frozen approved HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p app/src/main/assets
+          cat compiler-input/html.part* > app/src/main/assets/kitchen_prep_board.html
+          echo "ecb21222ee589b0578774c4c3c3d6d15a08a6d3c271163f468f204a13194a131  app/src/main/assets/kitchen_prep_board.html" | sha256sum -c -
+
+      - name: Reconstruct launcher icons
+        shell: bash
+        run: |
+          set -euo pipefail
+          for density in mdpi hdpi xhdpi xxhdpi; do
+            mkdir -p "app/src/main/res/mipmap-${density}"
+            base64 -d "compiler-input/icons/icon-${density}.b64" > "app/src/main/res/mipmap-${density}/ic_launcher.png"
+            cp "app/src/main/res/mipmap-${density}/ic_launcher.png" "app/src/main/res/mipmap-${density}/ic_launcher_round.png"
+          done
+
+      - name: Build debug APK
+        shell: bash
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Prepare APK artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp app/build/outputs/apk/debug/app-debug.apk dist/KitchenPrepBoard-ClosedTest.apk
+          sha256sum dist/KitchenPrepBoard-ClosedTest.apk > dist/KitchenPrepBoard-ClosedTest.apk.sha256
+          ls -lh dist
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: KitchenPrepBoard-ClosedTest-APK
+          path: |
+            dist/KitchenPrepBoard-ClosedTest.apk
+            dist/KitchenPrepBoard-ClosedTest.apk.sha256
+          if-no-files-found: error
+          retention-days: 7
