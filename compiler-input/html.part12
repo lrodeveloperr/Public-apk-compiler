@@ -1,0 +1,24 @@
+-AppIcon-v4.svg.
+  Android launcher/adaptive assets, splash mark, and Compose header mark must derive from that same master.
+  iOS AppIcon/splash mark and SwiftUI header mark must use that same master artwork.
+- The embedded SVG used by this HTML is identical to the exported canonical icon file.
+- Rounded surfaces map to RoundedCornerShape / RoundedRectangle.
+- Inline food illustrations should become bundled local assets in Android/iOS.
+- Breakpoints: compact <600, medium >=600, expanded >=840. Map to Android WindowSizeClass and SwiftUI size classes/GeometryReader.
+- Controls use >=48px touch targets and can be implemented with standard Button/IconButton/Switch/TextField/List/Navigation components.
+- Visible system copy is intentionally minimized for translation resilience.
+- The prototype includes the 31 launch locales from the backend contract; Arabic and Hebrew switch the preview to RTL.
+- Native builds should NOT embed this JS dictionary: Android uses string resources/AppCompat per-app locales; iOS uses String Catalogs/LocalizedStringResource.
+- User-entered board names, station names, task names, quantities, and notes are content, not UI chrome, and must not be destructively translated.
+- Light and dark themes use the same semantic token system; neither platform gets a separate visual design.
+- Android/iOS mode changes only platform chrome, typography metrics, corner nuance, and safe-area spacing; workflow and hierarchy stay identical.
+- Settings exists only in bottom navigation / expanded rail; no duplicate top-right Settings action.
+- Home Now / Waiting / Next / Done tiles are direct shortcuts to the matching Live lane; phone selects that lane, tablet scrolls/highlights it.
+- Active lane, task state, pause state, countdowns, task timers, density and awake-screen preferences persist locally; timer expiry never auto-completes work.
+- Android 1.0 is adult-only (18+) and launches directly to Home. There is no onboarding, age gate, or marketing intro. Google UMP handles required advertising privacy choices independently.
+- Production Privacy, Terms, Support, Safety and subscription destinations use public HTTPS release URLs supplied through the native build; this HTML keeps those URLs blank until approved.
+- The banner-ad reservation is frozen above the fixed bottom navigation with a non-interactive safe gap; page inset reserves all three layers, so scrolling/ad loading never shifts content.
+- The canonical app mark is a cutting board + task lanes + knife. In-app logo, thumbnail/app icon, splash mark, and adaptive/monochrome derivatives must all come from this one master.
+-->
+</body>
+</html>
