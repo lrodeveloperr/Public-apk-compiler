@@ -1,0 +1,355 @@
+7;color:#D5D7CF}
+html[data-theme="dark"] .priority-btn,html[data-theme="dark"] .done-toggle{background:#20261D;border-color:#394035;color:#D8E6B4}
+
+@media(min-width:840px){
+  .live-state-tabs{display:none}
+  .lanes{display:grid!important;grid-template-columns:repeat(4,1fr);gap:10px}
+  .lane{display:block!important}
+  .screen-live .thumb{display:block}
+}
+
+
+/* ===== Retention/revenue optimization ===== */
+.paste-inline{
+  width:100%;
+  min-height:52px;
+  margin-top:10px;
+  border:1px solid var(--line);
+  border-radius:17px;
+  background:linear-gradient(180deg,var(--surface),var(--surface-soft));
+  color:var(--ink-2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  padding:0 16px;
+  font-size:12px;
+  font-weight:900;
+  box-shadow:var(--depth-1),var(--highlight)
+}
+.paste-inline:active{transform:scale(.99)}
+html[data-theme="dark"] .paste-inline{
+  background:linear-gradient(180deg,#20261D,#181D16);
+  border-color:#343B30;
+  color:var(--ink)
+}
+.repeat-mini{
+  min-height:38px;border:1px solid var(--line);border-radius:12px;background:var(--surface);
+  color:var(--olive-deep);padding:0 10px;font-size:9px;font-weight:950;box-shadow:var(--depth-1),var(--highlight)
+}
+.repeat-finished{margin:8px 0 10px}
+.timer.timer-expired{
+  background:var(--terra-soft)!important;color:var(--terra-deep)!important;
+  box-shadow:0 0 0 2px rgba(185,86,53,.18)
+}
+body.compact-live .screen-live .live-card{min-height:54px;padding:6px 8px;margin-bottom:5px}
+body.compact-live .screen-live .qty-strip.compact{margin-top:4px;gap:4px}
+body.compact-live .screen-live .lanehead{margin-bottom:5px}
+html[data-theme="dark"] .repeat-mini{background:#20261D;color:#D8E6B4;border-color:#343B30}
+html[data-theme="dark"] .timer.timer-expired{background:#41271E!important;color:#FFD8CA!important}
+
+
+/* Home status tiles are direct shortcuts into Live. */
+.status-strip button.status{
+  border:1px solid transparent;
+  cursor:pointer;
+  position:relative;
+  font:inherit;
+  box-shadow:var(--depth-1),var(--highlight);
+  transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;
+}
+.status-strip button.status:active{transform:scale(.97)}
+.status-strip button.status:after{content:none}
+.status-strip button.status.now{border-color:rgba(77,91,39,.16)}
+.status-strip button.status.wait{border-color:rgba(197,138,41,.18)}
+.status-strip button.status.next{border-color:rgba(63,114,109,.18)}
+.status-strip button.status.done{border-color:rgba(89,92,84,.12)}
+
+.lane.home-jump-focus{
+  box-shadow:0 0 0 3px rgba(77,91,39,.24),var(--depth-3);
+  border-radius:18px;
+  background:rgba(220,228,196,.13);
+}
+html[data-theme="dark"] .lane.home-jump-focus{
+  box-shadow:0 0 0 3px rgba(129,148,81,.30),var(--depth-3);
+  background:rgba(129,148,81,.08);
+}
+
+@media(min-width:600px){
+  .hero{min-height:330px}
+  .hero-image{min-height:330px;height:auto}
+  .hero h1{font-size:42px}
+}
+@media(min-width:840px){
+  .home-grid>div:first-child>.section{order:1}
+  .home-grid>div:first-child>.hero{order:2}
+  .create-flow{max-width:760px}
+}
+
+@media(min-width:600px){
+  .hero{display:grid;grid-template-columns:1.02fr .98fr;min-height:330px}
+  .hero-image{height:auto;min-height:330px;order:2}
+  .hero-copy{padding:32px}
+  .hero h1{font-size:43px}
+  .quick-grid{grid-template-columns:repeat(3,1fr)}
+  .create-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px;align-items:start}
+}
+@media(min-width:840px){
+  .app{display:grid;grid-template-columns:230px 1fr}
+  .phone-status,.topbar,.bottomnav{display:none}
+  .desktop-rail{display:flex;position:sticky;top:0;height:100vh;background:linear-gradient(180deg,#FBF7F0,#F5EFE5);border-right:1px solid #DED7CB;box-shadow:14px 0 34px rgba(52,64,29,.07);flex-direction:column;z-index:4}
+  .rail-brand{padding:24px 18px 18px;display:flex;gap:11px;align-items:center;font-weight:950}
+  .railnav{display:flex;flex-direction:column;gap:6px;padding:0 12px}
+  .railnav button{min-height:52px;border:0;border-radius:16px;background:transparent;text-align:left;padding:0 14px;color:#686A62;font-weight:850}
+  .railnav button.active{background:linear-gradient(180deg,#E6ECD5,var(--olive-soft));color:var(--olive-deep);box-shadow:var(--depth-1),var(--highlight)}
+  .rail-foot{margin-top:auto;padding:16px;font-size:10px;color:var(--muted);line-height:1.5}
+  .shell{width:100%;max-width:var(--max);padding:30px 28px 50px}
+  .home-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:20px}
+  .hero{min-height:390px}
+  .hero h1{font-size:52px}
+  .hero-image{min-height:390px}
+  .side-stack .section:first-child{margin-top:0}
+  .boards-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+  .live-shell{margin:0;border-radius:28px;overflow:hidden;box-shadow:var(--depth-4),var(--highlight);min-height:auto}
+  .live-top{position:relative}
+  .lanes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding-bottom:22px}
+  .lane{margin-top:12px}
+  .screen-live{position:relative}
+  .fab{position:absolute;right:28px;bottom:24px}
+}
+
+/* ===== Tablet-fit refinement: 840–1199 logical px ===== */
+@media(min-width:840px) and (max-width:1199px){
+  .app{
+    grid-template-columns:104px minmax(0,1fr);
+  }
+  .desktop-rail{
+    width:104px;
+    background:linear-gradient(180deg,#FBF7F0,#F4EEE3);
+    box-shadow:10px 0 26px rgba(52,64,29,.06);
+  }
+  .rail-brand{
+    padding:18px 8px 14px;
+    flex-direction:column;
+    gap:7px;
+    text-align:center;
+    font-size:10px;
+    line-height:1.2;
+  }
+  .rail-brand .brandmark{
+    width:46px;
+    height:46px;
+    border-radius:15px;
+  }
+  .railnav{
+    padding:0 8px;
+    gap:5px;
+  }
+  .railnav button{
+    min-height:50px;
+    padding:0 6px;
+    border-radius:14px;
+    text-align:center;
+    font-size:10px;
+    line-height:1.15;
+  }
+  .rail-foot{display:none}
+
+  .shell{
+    width:100%;
+    max-width:none;
+    padding:20px 18px 92px;
+  }
+
+  .home-grid{
+    grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr);
+    gap:14px;
+  }
+  .hero{
+    min-height:318px;
+    border-radius:26px;
+  }
+  .hero-image{min-height:318px}
+  .hero-copy{padding:24px}
+  .hero h1{font-size:38px}
+  .side-stack .section:first-child{margin-top:0}
+  .quick-grid,.start-grid{gap:8px}
+  .start-card{min-height:76px;padding:12px}
+  .active-board{padding:16px}
+
+  .create-flow{max-width:720px}
+  .boards-grid{
+    grid-template-columns:minmax(0,1fr);
+    gap:14px;
+  }
+
+  .live-shell{
+    border-radius:22px;
+    margin:0;
+  }
+  .lanes{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:8px!important;
+    padding:10px 10px 72px!important;
+  }
+  .lane{
+    min-width:0;
+    margin-top:8px;
+  }
+  .lanehead{
+    margin-bottom:6px;
+    gap:4px;
+  }
+  .lanehead strong{font-size:10px}
+  .lanehead .meta{font-size:8px}
+  .live-card{
+    min-width:0;
+    min-height:58px;
+    padding:7px 7px;
+    gap:6px;
+    border-radius:14px;
+    margin-bottom:6px;
+  }
+  .live-card b{
+    display:block;
+    min-width:0;
+    font-size:10px;
+    line-height:1.2;
+    overflow-wrap:anywhere;
+  }
+  .live-card .meta{
+    font-size:8px;
+    line-height:1.2;
+  }
+  .screen-live .thumb{
+    width:34px;
+    height:34px;
+    border-radius:10px;
+  }
+  .timer{
+    font-size:9px;
+    padding:5px 6px;
+    border-radius:9px;
+  }
+  .task-action,.priority-btn{
+    min-width:42px;
+    height:34px;
+    padding:0 7px;
+    font-size:8px;
+  }
+  .qty-strip.compact{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:4px;
+  }
+  .qty-pill{
+    padding:5px 4px;
+    border-radius:10px;
+    min-width:0;
+  }
+  .qty-pill span{font-size:7px}
+  .qty-pill b{font-size:10px}
+
+  /* Tablet has a navigation rail, not phone bottom navigation.
+     Keep the anchored ad flush to the content area's bottom edge. */
+  .ad-reservation{
+    left:104px;
+    right:0;
+    bottom:0!important;
+    height:58px;
+  }
+  .shell{
+    padding-bottom:90px!important;
+  }
+
+  html[data-platform="ios"] .desktop-rail{
+    width:116px;
+    background:linear-gradient(180deg,#FAF6EF,#F1EAE0);
+  }
+  html[data-platform="ios"] .app{
+    grid-template-columns:116px minmax(0,1fr);
+  }
+  html[data-platform="ios"] .ad-reservation{
+    left:116px;
+  }
+  html[data-platform="ios"] .railnav button{
+    border-radius:16px;
+  }
+
+  html[data-theme="dark"] .desktop-rail{
+    background:linear-gradient(180deg,#171C14,#11150F);
+  }
+}
+
+
+/* ===== Store-readiness legal destinations ===== */
+
+.settings-legal{margin-top:18px}
+.setting-link{
+  width:100%;border:0;background:transparent;color:var(--ink);text-align:left;cursor:pointer;
+}
+.setting-link span:last-child{margin-left:auto;color:var(--muted);font-size:20px}
+.setting-link small{margin-left:auto;color:var(--muted);font-size:9px;max-width:45%;text-align:right}
+.danger-link{color:var(--terra-deep)}
+.release-toast{
+  position:fixed;z-index:250;left:50%;bottom:150px;transform:translateX(-50%);
+  max-width:min(86vw,360px);background:var(--charcoal);color:white;padding:11px 14px;border-radius:14px;
+  font-size:11px;font-weight:850;box-shadow:var(--depth-float)
+}
+.confirm-shade{position:fixed;z-index:260;inset:0;background:rgba(0,0,0,.38);display:grid;place-items:center;padding:20px}
+.confirm-shade[hidden]{display:none}
+.confirm-card{width:min(100%,380px);background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--depth-float)}
+.confirm-card>b{display:block;font-size:15px;margin-bottom:16px}
+.confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.danger-action{min-height:48px;border:0;border-radius:15px;background:var(--terra);color:#fff;font-weight:900}
+
+@media(max-width:430px){
+
+
+.settings-legal .setting-link>div{display:grid;gap:3px}
+.settings-legal .setting-link>div small{font-size:9px;color:var(--muted);font-weight:800}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="desktop-rail">
+    <div class="rail-brand">
+      <div class="brandmark"><img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%0A%3Cdefs%3E%0A%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%22120%22%20y1%3D%22100%22%20x2%3D%22900%22%20y2%3D%22920%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%3Cstop%20stop-color%3D%22%2366783A%22%2F%3E%3Cstop%20offset%3D%22.58%22%20stop-color%3D%22%234D5B27%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2330391A%22%2F%3E%0A%20%20%3C%2FlinearGradient%3E%0A%20%20%3ClinearGradient%20id%3D%22board%22%20x1%3D%22300%22%20y1%3D%22170%22%20x2%3D%22700%22%20y2%3D%22840%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%3Cstop%20stop-color%3D%22%23FFFDF8%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23EEE4D2%22%2F%3E%0A%20%20%3C%2FlinearGradient%3E%0A%20%20%3Cfilter%20id%3D%22s%22%20x%3D%22-30%25%22%20y%3D%22-30%25%22%20width%3D%22160%25%22%20height%3D%22160%25%22%3E%0A%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%2226%22%20stdDeviation%3D%2226%22%20flood-color%3D%22%231D2613%22%20flood-opacity%3D%22.28%22%2F%3E%0A%20%20%3C%2Ffilter%3E%0A%3C%2Fdefs%3E%0A%3Crect%20x%3D%2254%22%20y%3D%2254%22%20width%3D%22916%22%20height%3D%22916%22%20rx%3D%22220%22%20fill%3D%22url%28%23bg%29%22%2F%3E%0A%3Crect%20x%3D%2284%22%20y%3D%2284%22%20width%3D%22856%22%20height%3D%22856%22%20rx%3D%22194%22%20fill%3D%22none%22%20stroke%3D%22%23788A4B%22%20stroke-width%3D%2214%22%2F%3E%0A%3Cg%20filter%3D%22url%28%23s%29%22%3E%0A%20%20%3Crect%20x%3D%22236%22%20y%3D%22146%22%20width%3D%22552%22%20height%3D%22732%22%20rx%3D%22122%22%20fill%3D%22url%28%23board%29%22%2F%3E%0A%20%20%3Crect%20x%3D%22264%22%20y%3D%22176%22%20width%3D%22496%22%20height%3D%22674%22%20rx%3D%2296%22%20fill%3D%22none%22%20stroke%3D%22%23DCCFBC%22%20stroke-width%3D%2212%22%2F%3E%0A%20%20%3C%21--%20timer%20integrated%20into%20cutting-board%20handle%20--%3E%0A%20%20%3Ccircle%20cx%3D%22512%22%20cy%3D%22247%22%20r%3D%2264%22%20fill%3D%22%232F3727%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22512%22%20cy%3D%22247%22%20r%3D%2246%22%20fill%3D%22%23FFF8EC%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M512%20218v31l24%2014%22%20fill%3D%22none%22%20stroke%3D%22%234D5B27%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%3Crect%20x%3D%22490%22%20y%3D%22164%22%20width%3D%2244%22%20height%3D%2221%22%20rx%3D%2210%22%20fill%3D%22%232F3727%22%2F%3E%0A%20%20%3C%21--%20three%20prep-board%20rows%20--%3E%0A%20%20%3Cg%20stroke%3D%22%23343A2D%22%20stroke-width%3D%2228%22%20stroke-linecap%3D%22round%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M344%20420h265%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M344%20556h265%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M344%20692h265%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Ccircle%20cx%3D%22673%22%20cy%3D%22420%22%20r%3D%2228%22%20fill%3D%22%237F9655%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22673%22%20cy%3D%22556%22%20r%3D%2228%22%20fill%3D%22%23D1A044%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22673%22%20cy%3D%22692%22%20r%3D%2228%22%20fill%3D%22%234D8880%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E" alt="Kitchen Prep Board"></div>
+      Kitchen Prep Board
+    </div>
+    <nav class="railnav">
+      <button data-view="home" class="active"><span data-i18n="home">Home</span></button>
+      <button data-view="live"><span data-i18n="live">Live</span></button>
+      <button data-view="boards"><span data-i18n="boards">Boards</span></button>
+      <button data-view="create"><span data-i18n="new">New</span></button>
+      <button data-view="settings"><span data-i18n="settings">Settings</span></button>
+    </nav>
+  </aside>
+
+  <div>
+    <div class="phone-status"><span>9:30</span><span>● ◐ ▴</span></div>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brandmark"><img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201024%201024%22%3E%0A%3Cdefs%3E%0A%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%22120%22%20y1%3D%22100%22%20x2%3D%22900%22%20y2%3D%22920%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%3Cstop%20stop-color%3D%22%2366783A%22%2F%3E%3Cstop%20offset%3D%22.58%22%20stop-color%3D%22%234D5B27%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2330391A%22%2F%3E%0A%20%20%3C%2FlinearGradient%3E%0A%20%20%3ClinearGradient%20id%3D%22board%22%20x1%3D%22300%22%20y1%3D%22170%22%20x2%3D%22700%22%20y2%3D%22840%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%3Cstop%20stop-color%3D%22%23FFFDF8%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23EEE4D2%22%2F%3E%0A%20%20%3C%2FlinearGradient%3E%0A%20%20%3Cfilter%20id%3D%22s%22%20x%3D%22-30%25%22%20y%3D%22-30%25%22%20width%3D%22160%25%22%20height%3D%22160%25%22%3E%0A%20%20%20%20%3CfeDropShadow%20dx%3D%220%22%20dy%3D%2226%22%20stdDeviation%3D%2226%22%20flood-color%3D%22%231D2613%22%20flood-opacity%3D%22.28%22%2F%3E%0A%20%20%3C%2Ffilter%3E%0A%3C%2Fdefs%3E%0A%3Crect%20x%3D%2254%22%20y%3D%2254%22%20width%3D%22916%22%20height%3D%22916%22%20rx%3D%22220%22%20fill%3D%22url%28%23bg%29%22%2F%3E%0A%3Crect%20x%3D%2284%22%20y%3D%2284%22%20width%3D%22856%22%20height%3D%22856%22%20rx%3D%22194%22%20fill%3D%22none%22%20stroke%3D%22%23788A4B%22%20stroke-width%3D%2214%22%2F%3E%0A%3Cg%20filter%3D%22url%28%23s%29%22%3E%0A%20%20%3Crect%20x%3D%22236%22%20y%3D%22146%22%20width%3D%22552%22%20height%3D%22732%22%20rx%3D%22122%22%20fill%3D%22url%28%23board%29%22%2F%3E%0A%20%20%3Crect%20x%3D%22264%22%20y%3D%22176%22%20width%3D%22496%22%20height%3D%22674%22%20rx%3D%2296%22%20fill%3D%22none%22%20stroke%3D%22%23DCCFBC%22%20stroke-width%3D%2212%22%2F%3E%0A%20%20%3C%21--%20timer%20integrated%20into%20cutting-board%20handle%20--%3E%0A%20%20%3Ccircle%20cx%3D%22512%22%20cy%3D%22247%22%20r%3D%2264%22%20fill%3D%22%232F3727%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22512%22%20cy%3D%22247%22%20r%3D%2246%22%20fill%3D%22%23FFF8EC%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M512%20218v31l24%2014%22%20fill%3D%22none%22%20stroke%3D%22%234D5B27%22%20stroke-width%3D%2214%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%20%20%3Crect%20x%3D%22490%22%20y%3D%22164%22%20width%3D%2244%22%20height%3D%2221%22%20rx%3D%2210%22%20fill%3D%22%232F3727%22%2F%3E%0A%20%20%3C%21--%20three%20prep-board%20rows%20--%3E%0A%20%20%3Cg%20stroke%3D%22%23343A2D%22%20stroke-width%3D%2228%22%20stroke-linecap%3D%22round%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M344%20420h265%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M344%20556h265%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M344%20692h265%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Ccircle%20cx%3D%22673%22%20cy%3D%22420%22%20r%3D%2228%22%20fill%3D%22%237F9655%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22673%22%20cy%3D%22556%22%20r%3D%2228%22%20fill%3D%22%23D1A044%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22673%22%20cy%3D%22692%22%20r%3D%2228%22%20fill%3D%22%234D8880%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E" alt="Kitchen Prep Board"></div>
+        <div class="brandtext" id="topTitle">Kitchen Prep Board</div>
+      </div>
+    </header>
+    <main class="shell">
+      <section class="screen active" id="screen-home">
+        <div class="home-grid">
+          <div>
+            <div class="hero">
+              <div class="hero-image">
+                <svg viewBox="0 0 520 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#E5D8C4"/><stop offset="1" stop-color="#AEB28D"/></linearGradient>
+                    <linearGradient id="bowl" x1="0" x2="1"><stop stop-color="#6C4C28"/><stop offset="1" stop-color="#3F2D1B"/></linearGradient>
+                    <filter id="shadow"><feDropShadow dx="0" dy="13" stdDeviation="14" flood-opacity=".18"/></filter>
+                  </defs>
+                  <rect width="520" height="420" fill="url(#bg1)"/>
+                  <ellipse cx="318" cy="318" rx="156" ry="35" fill="#76684F" opacity=".22"/>
+                  <g filter="url(#shadow)">
+                    <ellipse cx="318" cy="234" rx="136" ry="104" fill="url(#bowl)"/>
+                    <ellipse cx="318" cy="215" rx="121" ry="87" fill="#F2E9DA"/>
+                    <ellipse cx="270" cy="199" r
