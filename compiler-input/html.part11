@@ -1,0 +1,363 @@
+hild(title);
+  card.append(thumb,grow);
+  const timer=session.taskTimers?.[task.id];
+  if(timer){
+    const t=document.createElement("span");t.className=lane==="waiting"?"timer wait":"timer";t.dataset.taskTimer=task.id;
+    t.textContent=formatCountdown(uiLocale,currentRemaining(timer));card.appendChild(t);
+  }else if(task.durationMinutes>0){
+    const badge=document.createElement("span");badge.className="badge";badge.dataset.durationMinutes=String(task.durationMinutes);
+    badge.textContent=formatMinutes(uiLocale,task.durationMinutes);card.appendChild(badge);
+  }
+  return card;
+}
+function renderLiveTasksFromBoard(board){
+  if(!board)return;
+  document.querySelectorAll("#lane-now > .live-card,#lane-waiting > .live-card,#lane-next > .live-card").forEach(x=>x.remove());
+  if(doneItems)doneItems.replaceChildren();
+  if(board.id==="demo-dinner"){
+    document.getElementById("lane-now").insertAdjacentHTML("beforeend",DEFAULT_LIVE_MARKUP.now);
+    document.getElementById("lane-waiting").insertAdjacentHTML("beforeend",DEFAULT_LIVE_MARKUP.waiting);
+    document.getElementById("lane-next").insertAdjacentHTML("beforeend",DEFAULT_LIVE_MARKUP.next);
+    if(doneItems)doneItems.innerHTML=DEFAULT_LIVE_MARKUP.done;
+    return;
+  }
+  (board.tasks||[]).forEach(task=>{
+    const lane=["now","waiting","next","done"].includes(task.initialLane)?task.initialLane:"next";
+    const card=liveTaskCard(task,lane);
+    const dest=lane==="done"?doneItems:document.getElementById(`lane-${lane}`);
+    if(dest)dest.appendChild(card);
+  });
+}
+function updateWaitingAlert(){
+  const alert=document.getElementById("liveWaitingAlert");
+  if(!alert)return;
+  const card=document.querySelector("#lane-waiting > .live-card[data-task-id]");
+  if(!card){alert.hidden=true;return}
+  alert.hidden=false;
+  const id=card.dataset.taskId;
+  const task=currentBoard()?.tasks?.find(t=>t.id===id);
+  const title=document.getElementById("waitingAlertTitle");
+  if(title){
+    if(task?.nameKey&&I18N[uiLocale].s[task.nameKey]){title.dataset.i18n=task.nameKey;title.textContent=I18N[uiLocale].s[task.nameKey]}
+    else{delete title.dataset.i18n;title.textContent=task?.name||card.querySelector(".grow b")?.textContent||I18N[uiLocale].s.wait}
+  }
+  const review=document.getElementById("waitingAlertReview");if(review)review.dataset.reviewTask=id;
+  const meta=document.getElementById("waitingAlertMeta");
+  if(meta){
+    const timer=session.taskTimers?.[id];const secs=timer?currentRemaining(timer):0;
+    meta.textContent=`${I18N[uiLocale].s.wait}${secs>0?" · "+formatCountdown(uiLocale,secs):""}`;
+  }
+}
+function renderActiveBoardContext(){
+  const board=currentBoard();if(!board)return;
+  const name=boardName(board),area=boardArea(board);
+  [
+    ["homeHeroBoardName",board.nameKey,board.name],
+    ["homeActiveBoardName",board.nameKey,board.name],
+    ["liveBoardName",board.nameKey,board.name]
+  ].forEach(([id,key,text])=>setSystemOrUserText(document.getElementById(id),key,text));
+  [
+    ["homeHeroBoardArea",board.areaKey,board.area],
+    ["homeActiveBoardArea",board.areaKey,board.area],
+    ["liveBoardArea",board.areaKey,board.area]
+  ].forEach(([id,key,text])=>setSystemOrUserText(document.getElementById(id),key,text));
+  ["homeHeroBoardTime","homeActiveBoardTime","liveBoardTime","liveTargetTime"].forEach(id=>{
+    const el=document.getElementById(id);if(el){el.dataset.time=board.time;el.textContent=formatClock(uiLocale,board.time)}
+  });
+  const taskCount=document.getElementById("homeActiveTaskCount");if(taskCount){delete taskCount.dataset.number;taskCount.textContent=nf(uiLocale).format(board.tasks.length)}
+  const duration=document.getElementById("homeActiveDuration");
+  if(duration){
+    const mins=(board.tasks||[]).reduce((sum,t)=>sum+Math.max(0,Number(t.durationMinutes)||0),0);
+    duration.dataset.durationMinutes=String(mins);duration.textContent=formatMinutes(uiLocale,mins);
+  }
+  updateWaitingAlert();
+}
+function restoreTaskLanes(){
+  Object.entries(session.taskLanes).forEach(([id,lane])=>{
+    const card=document.querySelector(`.live-card[data-task-id="${id}"]`);
+    if(!card)return;
+    const dest=lane==="done"?doneItems:document.getElementById(`lane-${lane}`);
+    if(dest)dest.appendChild(card);
+    ensureAction(card,lane);
+  });
+}
+function refreshLaneCounts(){
+  ["now","waiting","next","done"].forEach(name=>{
+    const value=nf(uiLocale).format(laneCount(name));
+    document.querySelectorAll(`[data-lane-count="${name}"]`).forEach(el=>el.textContent=value);
+    document.querySelectorAll(`[data-lane-count-home="${name}"]`).forEach(el=>el.textContent=value);
+  });
+  const remainingCount=laneCount("now")+laneCount("waiting")+laneCount("next");
+  const doneCount=laneCount("done"),allCount=remainingCount+doneCount;
+  const repeat=document.getElementById("repeatAfterFinish");
+  if(repeat)repeat.hidden=remainingCount!==0;
+  const progress=allCount?doneCount/allCount:0;
+  const hp=document.getElementById("homeActiveProgress");
+  if(hp){hp.dataset.percent=String(progress);hp.textContent=nf(uiLocale,{style:"percent",maximumFractionDigits:0}).format(progress)}
+  const board=currentBoard();
+  if(board&&remainingCount===0&&allCount>0&&board.status!=="completed"){
+    board.status="completed";saveBoards();renderBoardsView();
+  }
+  updateWaitingAlert();
+}
+renderLiveTasksFromBoard(currentBoard());
+restoreTaskLanes();
+renderActiveBoardContext();
+
+const doneToggle=document.getElementById("doneToggle");
+function syncDoneOpen(){
+  if(session.doneOpen){doneItems.removeAttribute("hidden");doneToggle.textContent=I18N[uiLocale].s.hide}
+  else{doneItems.setAttribute("hidden","");doneToggle.textContent=I18N[uiLocale].s.show}
+}
+if(doneToggle)doneToggle.onclick=()=>{session.doneOpen=!session.doneOpen;syncDoneOpen();saveSession()};
+syncDoneOpen();
+
+let lastCompleted=null,undoTimer=null;
+function showUndo(){
+  const bar=document.getElementById("undoSnackbar");bar.hidden=false;clearTimeout(undoTimer);
+  undoTimer=setTimeout(()=>{bar.hidden=true;lastCompleted=null},5000);
+}
+document.addEventListener("click",e=>{
+  const check=e.target.closest(".task-action.warn");
+  if(check){
+    const card=check.closest(".live-card");
+    if(!card)return;
+    document.getElementById("lane-now").appendChild(card);
+    ensureAction(card,"now");
+    card.classList.add("flash");setTimeout(()=>card.classList.remove("flash"),1100);
+    snapshotTaskLanes();refreshLaneCounts();selectLiveLane("now");haptic(16);
+    return;
+  }
+
+  const review=e.target.closest("[data-review-task]");
+  if(review){
+    const id=review.dataset.reviewTask;
+    const card=document.querySelector(`.live-card[data-task-id="${CSS.escape(id)}"]`);
+    if(!card)return;
+    const laneName=card.closest("#doneItems")?"done":card.closest("[data-lane-name]")?.dataset.laneName||"waiting";
+    selectLiveLane(laneName);
+    setTimeout(()=>{
+      card.scrollIntoView({behavior:"smooth",block:"center",inline:"nearest"});
+      card.classList.add("flash");
+      setTimeout(()=>card.classList.remove("flash"),1100);
+    },60);
+    return;
+  }
+
+  const done=e.target.closest(".complete-task");
+  if(done){
+    const card=done.closest(".live-card"),parent=card.parentElement,next=card.nextElementSibling;
+    lastCompleted={card,parent,next,priorLane:parent.dataset.laneName||"now"};
+    card.classList.add("is-complete");
+    if(!card.querySelector("[data-completion-check]")){
+      const c=document.createElement("div");
+      c.className="check";c.dataset.completionCheck="1";c.textContent="✓";card.prepend(c);
+    }
+    doneItems.appendChild(card);done.remove();
+    snapshotTaskLanes();refreshLaneCounts();showUndo();haptic(20);return;
+  }
+
+  const p=e.target.closest("[data-priority]");
+  if(p){
+    const card=p.closest(".live-card");
+    document.getElementById("lane-now").appendChild(card);ensureAction(card,"now");
+    card.classList.add("flash");setTimeout(()=>card.classList.remove("flash"),1100);
+    snapshotTaskLanes();refreshLaneCounts();selectLiveLane("now");haptic(16);
+  }
+});
+document.getElementById("undoBtn").onclick=()=>{
+  if(!lastCompleted)return;
+  const {card,parent,next,priorLane}=lastCompleted;
+  card.classList.remove("is-complete");
+  const marker=card.querySelector("[data-completion-check]");if(marker)marker.remove();
+  if(next&&next.parentElement===parent)parent.insertBefore(card,next);else parent.appendChild(card);
+  ensureAction(card,priorLane);document.getElementById("undoSnackbar").hidden=true;
+  lastCompleted=null;snapshotTaskLanes();refreshLaneCounts();haptic(12);
+};
+
+function resetBoardAndOpen(){
+  clearTimeout(undoTimer);undoTimer=null;lastCompleted=null;
+  const undoBar=document.getElementById("undoSnackbar");if(undoBar)undoBar.hidden=true;
+  const board=currentBoard()||getPreferredBoard();if(!board)return;
+  boards.forEach(b=>{if(b.status==="active"&&b.id!==board.id)b.status="upcoming"});
+  board.status="active";board.runtime=null;saveBoards();
+  const keepSettings=session.settings;
+  session=makeSession("live",board,keepSettings,false);window.kpbSessionState=session;
+  paused=false;total=session.remaining;expiredNotified=new Set();activeLiveLane="now";
+  renderLiveTasksFromBoard(board);restoreTaskLanes();renderActiveBoardContext();
+  syncDoneOpen();refreshLaneCounts();selectLiveLane("now");syncPauseButton();renderAllTimers();
+  document.querySelectorAll("[data-setting]").forEach(sw=>sw.classList.toggle("on",!!session.settings[sw.dataset.setting]));
+  document.body.classList.toggle("compact-live",session.settings.compact);
+  saveSession();renderBoardsView();setView("live");haptic(18);
+}
+function openBoardById(boardId){
+  const board=getBoard(boardId);if(!board)return;
+  if(session.activeBoardId===board.id&&board.status==="active"){
+    renderLiveTasksFromBoard(board);restoreTaskLanes();renderActiveBoardContext();refreshLaneCounts();setView("live");return;
+  }
+  saveSession();
+  const wasCompleted=board.status==="completed";
+  boards.forEach(b=>{if(b.status==="active"&&b.id!==board.id)b.status="upcoming"});
+  board.status="active";if(wasCompleted)board.runtime=null;saveBoards();
+  const keepSettings=session.settings;
+  session=makeSession("live",board,keepSettings,!wasCompleted);window.kpbSessionState=session;
+  paused=false;total=session.remaining;expiredNotified=new Set();activeLiveLane="now";
+  renderLiveTasksFromBoard(board);restoreTaskLanes();renderActiveBoardContext();
+  syncDoneOpen();refreshLaneCounts();selectLiveLane("now");syncPauseButton();renderAllTimers();
+  saveSession();renderBoardsView();setView("live");syncWakeLock();haptic(18);
+}
+document.addEventListener("click",e=>{
+  const opener=e.target.closest("[data-board-open]");if(!opener)return;
+  e.preventDefault();openBoardById(opener.dataset.boardOpen);
+});
+document.querySelectorAll("[data-repeat-board]").forEach(btn=>btn.addEventListener("click",resetBoardAndOpen));
+
+refreshLaneCounts();selectLiveLane(activeLiveLane);syncPauseButton();renderAllTimers();
+
+let wakeLock=null;
+async function syncWakeLock(){
+  const should=session.settings.awake&&session.currentView==="live"&&document.visibilityState==="visible";
+  if(should&&navigator.wakeLock?.request&&!wakeLock){
+    try{wakeLock=await navigator.wakeLock.request("screen");wakeLock.addEventListener("release",()=>wakeLock=null)}catch(_){}
+  }else if(!should&&wakeLock){try{await wakeLock.release()}catch(_){}wakeLock=null}
+}
+window.kpbOnViewChange=v=>{session.currentView=v;saveSession();syncWakeLock()};
+document.addEventListener("visibilitychange",syncWakeLock);
+
+document.querySelectorAll("[data-setting]").forEach(sw=>sw.classList.toggle("on",!!session.settings[sw.dataset.setting]));
+document.addEventListener("click",e=>{
+  const sw=e.target.closest("[data-setting]");if(!sw)return;
+  session.settings[sw.dataset.setting]=sw.classList.contains("on");
+  if(sw.dataset.setting==="compact")document.body.classList.toggle("compact-live",session.settings.compact);
+  saveSession();syncWakeLock();
+});
+document.body.classList.toggle("compact-live",session.settings.compact);
+
+buildLanguageMenu();applyLocale(uiLocale);
+
+let toastTimer=null;
+function showReleaseToast(text){
+  const t=document.getElementById("releaseToast");
+  t.textContent=text;t.hidden=false;clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.hidden=true,2200);
+}
+document.querySelectorAll("[data-release-link]").forEach(btn=>btn.addEventListener("click",e=>{
+  e.preventDefault();
+  const url=RELEASE_LINKS[btn.dataset.releaseLink];
+  if(url&&/^https:\/\//i.test(url))window.open(url,"_blank","noopener");
+  else showReleaseToast(I18N[uiLocale].s.linkPending);
+}));
+document.querySelectorAll("[data-privacy-choices]").forEach(btn=>btn.addEventListener("click",()=>{
+  showReleaseToast(I18N[uiLocale].s.managedGoogle);
+}));
+const deleteShade=document.getElementById("deleteShade");
+document.querySelectorAll("[data-delete-local]").forEach(btn=>btn.addEventListener("click",()=>deleteShade.hidden=false));
+document.querySelector("[data-delete-cancel]")?.addEventListener("click",()=>deleteShade.hidden=true);
+document.querySelector("[data-delete-confirm]")?.addEventListener("click",()=>{
+  const keepLocale=localStorage.getItem("kpb-ui-locale");
+  localStorage.clear();
+  if(keepLocale)localStorage.setItem("kpb-ui-locale",keepLocale);
+  deleteShade.hidden=true;
+  location.reload();
+});
+
+
+const INITIAL_TASK_LIST_MARKUP=document.getElementById("taskList")?.innerHTML||"";
+let createStep=1;
+function renderCreateStep(){
+  document.querySelectorAll(".create-step").forEach(el=>el.classList.toggle("active",Number(el.dataset.step)===createStep));
+  document.querySelectorAll(".flow-step").forEach(el=>el.classList.toggle("active",Number(el.dataset.stepDot)<=createStep));
+  const back=document.getElementById("createBack");
+  const next=document.getElementById("createNext");
+  if(back)back.style.visibility=createStep===1?"hidden":"visible";
+  if(next)next.textContent=createStep===3?I18N[uiLocale].s.save:I18N[uiLocale].s.next;
+}
+function prepareNewBoardDraft(){
+  createStep=1;
+  const name=document.getElementById("createName"),time=document.getElementById("createTime"),area=document.getElementById("createArea"),notes=document.getElementById("createNotes");
+  if(name)name.value="";if(time)time.value="18:30";if(area)area.value="stationHot";if(notes)notes.value="";
+  const list=document.getElementById("taskList");if(list)list.innerHTML=INITIAL_TASK_LIST_MARKUP;
+  document.querySelectorAll("#timingSeg button").forEach(b=>b.classList.toggle("active",b.dataset.timingMode==="target"));
+  renderCreateStep();applyLocale(uiLocale);
+}
+function collectCreateTasks(){
+  let nowSlots=0;
+  return [...document.querySelectorAll("#taskList .task-card")].map((card,index)=>{
+    const nameEl=card.querySelector(".task-name");
+    const nameKey=nameEl?.dataset.i18n||null;
+    const waitAction=nameKey==="taskRestChicken"?"check":null;
+    let initialLane;
+    if(waitAction)initialLane="waiting";
+    else if(nowSlots<2){initialLane="now";nowSlots++}
+    else initialLane="next";
+    return normalizeTask({
+      id:kpbId("task"),
+      name:nameEl?.textContent?.trim()||I18N[uiLocale].s.newTask,
+      nameKey,
+      durationMinutes:Number(card.querySelector("[data-duration-minutes]")?.dataset.durationMinutes)||10,
+      initialLane,waitAction
+    },index);
+  });
+}
+function saveCreatedBoard(){
+  const name=document.getElementById("createName")?.value.trim()||I18N[uiLocale].s.dinner;
+  const time=document.getElementById("createTime")?.value||"18:30";
+  const areaKey=document.getElementById("createArea")?.value||"stationHot";
+  const notes=document.getElementById("createNotes")?.value||"";
+  const timingMode=document.querySelector("#timingSeg button.active")?.dataset.timingMode||"target";
+  const board=normalizeBoard({
+    id:kpbId("board"),name,time,areaKey,notes,timingMode,status:"upcoming",createdAt:Date.now(),tasks:collectCreateTasks()
+  });
+  boards.unshift(board);saveBoards();boardFilter="upcoming";renderBoardsView();
+  prepareNewBoardDraft();setView("boards");haptic(16);
+  return board;
+}
+document.querySelectorAll("[data-paste-start]").forEach(btn=>btn.addEventListener("click",()=>{
+  prepareNewBoardDraft();createStep=2;setView("create");renderCreateStep();
+}));
+const createBack=document.getElementById("createBack");
+const createNext=document.getElementById("createNext");
+if(createBack)createBack.onclick=()=>{if(createStep>1){createStep--;renderCreateStep();window.scrollTo({top:0,behavior:"smooth"});}};
+if(createNext)createNext.onclick=()=>{
+  if(createStep<3){createStep++;renderCreateStep();window.scrollTo({top:0,behavior:"smooth"});}
+  else saveCreatedBoard();
+};
+renderCreateStep();
+renderBoardsView();
+
+renderActiveBoardContext();renderBoardsView();
+if(session.currentView==="live")setView("live");
+else setView("home");
+syncWakeLock();
+
+function applyPreviewState(state){
+  const theme=(state&&state.theme)==="dark"?"dark":"light";
+  const platform=(state&&state.platform)==="ios"?"ios":"android";
+  document.documentElement.dataset.theme=theme;
+  document.documentElement.dataset.platform=platform;
+  const status=document.querySelector(".phone-status");
+  if(status){
+    status.innerHTML=platform==="ios"
+      ? '<span>9:41</span><span>● 5G ▰</span>'
+      : '<span>9:30</span><span>● 5G ▴</span>';
+  }
+}
+window.addEventListener("message",e=>{
+  if(e.data&&e.data.type==="kpb-preview-state")applyPreviewState(e.data);
+});
+applyPreviewState({theme:"light",platform:"android"});
+
+</script>
+
+<!--
+NATIVE PARITY NOTES
+- No hover-only interactions, web-only blur effects, 3D transforms, canvas, web fonts, or browser-specific effects are required for the design.
+- Depth hierarchy is intentionally shared across platforms:
+  D1 utility controls ~= 2–3dp native elevation;
+  D2 normal cards ~= 6–8dp;
+  D3 summary/active cards ~= 8–10dp;
+  D4 floating/attention surfaces ~= 12–14dp;
+  transient/FAB ~= 18–24dp.
+- Compose: RoundedCornerShape + Modifier.shadow/elevation + Brush.linearGradient.
+- SwiftUI: RoundedRectangle + .shadow + LinearGradient.
+- Canonical brand/thumbnail master is KitchenPrepBoard
