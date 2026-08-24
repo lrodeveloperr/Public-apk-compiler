@@ -1,0 +1,141 @@
+</button>
+            <button class="next" data-live-lane="next"><span data-i18n="next">Next</span><b data-lane-count="next">2</b></button>
+            <button class="done" data-live-lane="done"><span data-i18n="done">Done</span><b data-lane-count="done">2</b></button>
+          </div>
+
+          <div class="lanes">
+            <div class="lane active" id="lane-now" data-lane-name="now">
+              <div class="lanehead"><strong class="nowc"><span data-i18n="now">Now</span> · <span data-lane-count="now">2</span></strong><span class="meta" data-duration-minutes="35">35</span></div>
+              <div class="live-card" data-task-id="roast">
+                <div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#E8DCC7"/><circle cx="17" cy="22" r="8" fill="#C75D35"/><circle cx="29" cy="18" r="8" fill="#6F8A38"/><circle cx="30" cy="30" r="7" fill="#D39B2E"/></svg></div>
+                <div class="grow"><b data-i18n="taskRoastVeg">Roast vegetables</b><div class="qty-strip compact"><span><b data-i18n="have">Have</b> 1</span><span><b data-i18n="need">Need</b> 3</span><span><b data-i18n="prep">Prep</b> 2</span></div></div>
+                <span class="timer" data-task-timer="roast" data-initial-seconds="501">8:21</span><button class="task-action complete-task" data-i18n="done">Done</button>
+              </div>
+              <div class="live-card" data-task-id="dressing">
+                <div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#E2EAD5"/><rect x="17" y="11" width="14" height="26" rx="5" fill="#70883E"/></svg></div>
+                <div class="grow"><b data-i18n="taskHerbDressing">Make herb dressing</b><div class="qty-strip compact"><span><b data-i18n="have">Have</b> 0.4 L</span><span><b data-i18n="need">Need</b> 1.2 L</span><span><b data-i18n="prep">Prep</b> 0.8 L</span></div></div>
+                <span class="timer" data-task-timer="dressing" data-initial-seconds="252">4:12</span><button class="task-action complete-task" data-i18n="done">Done</button>
+              </div>
+            </div>
+
+            <div class="lane" id="lane-waiting" data-lane-name="waiting">
+              <div class="lanehead"><strong class="waitc"><span data-i18n="wait">Waiting</span> · <span data-lane-count="waiting">2</span></strong><span class="meta" data-duration-minutes="27">27</span></div>
+              <div class="live-card attn" data-task-id="chicken" data-wait-action="check">
+                <div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#ECE4D7"/><ellipse cx="24" cy="25" rx="15" ry="9" fill="#9B5835"/></svg></div>
+                <div class="grow"><b data-i18n="taskRestChicken">Rest chicken</b><div class="qty-strip compact"><span><b data-i18n="have">Have</b> 0</span><span><b data-i18n="need">Need</b> 6</span><span><b data-i18n="prep">Prep</b> 6</span></div></div>
+                <span class="timer wait" data-task-timer="chicken" data-initial-seconds="123">2:03</span><button class="task-action warn" data-i18n="check">Check</button>
+              </div>
+              <div class="live-card" data-task-id="plates">
+                <div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#EEE9DF"/><ellipse cx="24" cy="30" rx="13" ry="4" fill="#A9A49A"/></svg></div>
+                <div class="grow"><b data-i18n="taskWarmPlates">Warm plates</b><div class="qty-strip compact"><span><b data-i18n="have">Have</b> 10</span><span><b data-i18n="need">Need</b> 30</span><span><b data-i18n="prep">Prep</b> 20</span></div></div>
+                <span class="timer wait" data-task-timer="plates" data-initial-seconds="300">5:00</span>
+              </div>
+            </div>
+
+            <div class="lane" id="lane-next" data-lane-name="next">
+              <div class="lanehead"><strong class="nextc"><span data-i18n="next">Next</span> · <span data-lane-count="next">2</span></strong><span class="meta" data-duration-minutes="18">18</span></div>
+              <div class="live-card" data-task-id="proteins">
+                <div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#E9DFD0"/><ellipse cx="24" cy="24" rx="14" ry="9" fill="#82513A"/></svg></div>
+                <div class="grow"><b data-i18n="taskPortionProteins">Portion proteins</b><div class="qty-strip compact"><span><b data-i18n="have">Have</b> 12</span><span><b data-i18n="need">Need</b> 30</span><span><b data-i18n="prep">Prep</b> 18</span></div></div>
+                <span class="badge" data-duration-minutes="10">10</span><button class="priority-btn" data-priority data-i18n-aria="priority">↑</button>
+              </div>
+              <div class="live-card" data-task-id="garnish">
+                <div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#DFE8D5"/><circle cx="21" cy="22" r="8" fill="#568038"/></svg></div>
+                <div class="grow"><b data-i18n="taskPrepGarnishes">Prep garnishes</b></div>
+                <span class="badge" data-duration-minutes="8">8</span><button class="priority-btn" data-priority data-i18n-aria="priority">↑</button>
+              </div>
+            </div>
+
+            <div class="lane" id="lane-done" data-lane-name="done">
+              <div class="lanehead"><strong><span data-i18n="done">Done</span> · <span data-lane-count="done">2</span></strong><button class="done-toggle" id="doneToggle" data-i18n="show">Show</button></div>
+              <button class="primary full repeat-finished" id="repeatAfterFinish" data-repeat-board data-i18n="repeat" hidden>Repeat</button>
+              <div class="done-items" id="doneItems" hidden>
+                <div class="live-card is-complete" data-task-id="greens"><div class="check">✓</div><div class="grow"><b data-i18n="taskWashGreens">Wash greens</b></div><button class="repeat-mini" data-repeat-board data-i18n="repeat">Repeat</button></div>
+                <div class="live-card is-complete" data-task-id="sanitize"><div class="check">✓</div><div class="grow"><b data-i18n="taskSanitize">Sanitize station</b></div><button class="repeat-mini" data-repeat-board data-i18n="repeat">Repeat</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="undo-snackbar" id="undoSnackbar" hidden>
+        <span data-i18n="done">Done</span>
+        <button id="undoBtn" data-i18n="undo">Undo</button>
+      </div>
+
+      <section class="screen" id="screen-settings">
+        <h1 class="page-title" data-i18n="settings">Settings</h1>
+        <div class="card">
+          <div class="setting">
+            <div><b data-i18n="language">Language</b></div>
+            <select id="languageSelect" class="lang-select" data-i18n-aria="language"></select>
+          </div>
+          <div class="setting"><div><b data-i18n="alerts">Alerts</b></div><button class="switch on" id="alertsSwitch" data-setting="alerts" data-i18n-aria="alerts"></button></div>
+          <div class="setting"><div><b data-i18n="awake">Screen awake</b></div><button class="switch on" id="awakeSwitch" data-setting="awake" data-i18n-aria="awake"></button></div>
+          <div class="setting"><div><b data-i18n="compact">Compact</b></div><button class="switch" id="compactSwitch" data-setting="compact" data-i18n-aria="compact"></button></div>
+          <div class="setting"><div><b data-i18n="haptics">Haptics</b></div><button class="switch on" id="hapticsSwitch" data-setting="haptics" data-i18n-aria="haptics"></button></div>
+        </div>
+        <div class="section settings-legal">
+          <div class="sectionhead"><h2 data-i18n="legal">Privacy & legal</h2></div>
+          <div class="card">
+            <button class="setting setting-link" data-release-link="privacy"><b data-i18n="privacy">Privacy</b><span>›</span></button>
+            <button class="setting setting-link" data-release-link="terms"><b data-i18n="terms">Terms</b><span>›</span></button>
+            <button class="setting setting-link" data-release-link="support"><b data-i18n="support">Support</b><span>›</span></button>
+            <button class="setting setting-link" data-release-link="safety"><b data-i18n="safety">Safety</b><span>›</span></button>
+            <button class="setting setting-link" data-privacy-choices><b data-i18n="privacyChoices">Privacy choices</b><small data-i18n="managedGoogle">Managed by Google where required</small></button>
+            <button class="setting setting-link" data-release-link="subscription">
+              <div><b data-i18n="removeAds">Remove ads</b><small><span>US$1.49</span> · <span data-i18n="monthlyPlan">Monthly</span></small></div><span>›</span>
+            </button>
+            <button class="setting setting-link" data-release-link="subscription"><b data-i18n="manageSub">Manage subscription</b><span>›</span></button>
+            <button class="setting setting-link danger-link" data-delete-local><b data-i18n="deleteData">Delete local data</b></button>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+
+    <div class="ad-reservation test-ad" aria-label="Google test advertisement preview"
+         data-ad-unit="ca-app-pub-3940256099942544/9214589741">
+      <span class="test-ad-badge">TEST AD</span>
+      <span class="test-ad-icon" aria-hidden="true">K</span>
+      <span class="test-ad-copy">
+        <b>Kitchen tools for busy prep</b>
+        <small>Sample advertiser · Google demo banner</small>
+      </span>
+      <span class="test-ad-cta" aria-hidden="true">Learn more</span>
+    </div>
+
+
+    <div class="release-toast" id="releaseToast" hidden></div>
+    <div class="confirm-shade" id="deleteShade" hidden>
+      <div class="confirm-card">
+        <b data-i18n="deleteConfirm">Delete local app data?</b>
+        <div class="confirm-actions">
+          <button class="secondary" data-delete-cancel data-i18n="cancel">Cancel</button>
+          <button class="danger-action" data-delete-confirm data-i18n="delete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <nav class="bottomnav">
+      <button data-view="home" class="active"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7v9H5v-9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M9 20v-6h6v6" fill="none" stroke="currentColor" stroke-width="1.7"/></svg><span data-i18n="home">Home</span></button>
+      <button data-view="live"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v4l3 2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span data-i18n="live">Live</span></button>
+      <button data-view="boards"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="7" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="5" width="7" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg><span data-i18n="boards">Boards</span></button>
+      <button data-view="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1a8 8 0 0 0-1.7-1L14.5 3h-5l-.4 3.1a8 8 0 0 0-1.7 1l-2.4-1-2 3.4L5.1 11a7 7 0 0 0 0 2L3 14.5l2 3.4 2.4-1a8 8 0 0 0 1.7 1l.4 3.1h5l.4-3.1a8 8 0 0 0 1.7-1l2.4 1 2-3.4-2.1-1.5a7 7 0 0 0 .1-1Z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg><span data-i18n="settings">Settings</span></button>
+    </nav>
+  </div>
+</div>
+
+<script>
+
+
+const RELEASE_LINKS={
+  privacy:"https://lrodeveloperr.github.io/kitchen-prep-board-policies-repo/privacy/",
+  terms:"https://lrodeveloperr.github.io/kitchen-prep-board-policies-repo/terms/",
+  support:"https://lrodeveloperr.github.io/kitchen-prep-board-policies-repo/support/",
+  safety:"https://lrodeveloperr.github.io/kitchen-prep-board-policies-repo/safety/",
+  subscription:"https://lrodeveloperr.github.io/kitchen-prep-board-policies-repo/subscription/"
+};
+
+const I18N={"en":{"name":"English","dir":"ltr","s":{"home":"Home","boards":"Boards","new":"New","live":"Live","settings":"Settings","active":"Active","quick":"Quick","recent":"Recent","now":"Now","wait":"Waiting","next":"Next","done":"Done","template":"Template","paste":"Paste","name":"Name","time":"Time","station":"Station","notes":"Notes","tasks":"Tasks","timing":"Timing","manual":"Manual","target":"Target","custom":"Custom","save":"Save","upcoming":"Upcoming","all":"All","pause":"Pause","resume":"Resume","alerts":"Alerts","awake":"Screen awake","compact":"Compact","haptics":"Haptics","language":"Language","today":"Today","onTrack":"On track","open":"Open","continue":"Continue","start":"Start","details":"Details","back":"Back","review":"Review","check":"Check","ready":"Ready","newTask":"New task","edit":"Edit","tomorrow":"Tomorrow","dinner":"Dinner","brunch":"Brunch","lateNight":"Late night","lunch":"Lunch","banquet":"Banquet","stationHot":"Hot station","stationCold":"Cold prep","stationPastry":"Pastry","stationSandwich":"Sandwich","stationBanquet":"Banquet","taskRoastVeg":"Roast vegetables","taskRestChicken":"Rest chicken","taskHerbDressing":"Make herb dressing","taskWarmPlates":"Warm plates","taskPortionProteins":"Portion proteins","taskPrepGarnishes":"Prep garnishes","taskWashGreens":"Wash greens","taskSanitize":"Sanitize station","have":"Have","need":"Need","prep":"Prep","priority":"Priority","undo":"Undo","show":"Show","hide":"Hide","repeat":"Repeat","area":"Area","welcome":"Welcome","onDevice":"On device","noAccount":"No account","privacy":"Privacy","ads":"Ads","boardsStay":"Boards stay on this device","googleAds":"Google ads use device and app-use data","privacyChoices":"Privacy choices","terms":"Terms","support":"Support","safety":"Safety","legal":"Privacy & legal","manageSub":"Manage subscription","deleteData":"Delete local data","steps":"3 steps","linkPending":"Public release link needed","managedGoogle":"Managed by Google where required","cancel":"Cancel","delete":"Delete","deleteConfirm":"Delete local app data?","about":"About","adults18":"Adults 18+","removeAds":"Remove ads","monthlyPlan":"Monthly"}},"es":{"name":"Español","dir":"ltr","s":{"home":"Inicio","boards":"Tableros","new":"Nuevo","live":"En vivo","settings":"Ajustes","active":"Activo","quick":"Rápido","recent":"Recientes","now":"Ahora","wait":"En espera","next":"Siguiente","done":"Hecho","template":"Plantilla","paste":"Pegar","name":"Nombre","time":"Hora","station":"Estación","notes":"Notas","tasks":"Tareas","timing":"Tiempo","manual":"Manual","target":"Objetivo","custom":"Personalizado","save":"Guardar","upcoming":"Próximos","all":"Todos","pause":"Pausar","resume":"Reanudar","alerts":"Alertas","awake":"Pantalla activa","compact":"Compacto","haptics":"Háptica","language":"Idioma","today":"Hoy","onTrack":"En hora","open":"Abrir","continue":"Continuar","start":"Empezar","details":"Detalles","back":"Atrás","review":"Revisar","check":"Comprobar","ready":"Listo","newTask":"Nueva tarea","edit":"Editar","tomorrow":"Mañana","dinner":"Cena","brunch":"Brunch","lateNight":"Noche","lunch":"Almuerzo","banquet":"Banquete","stationHot":"Estación caliente","stationCold":"Preparación fría","stationPastry":"Pastelería","stationSandwich":"Sándwiches","stationBanquet":"Banquete","taskRoastVeg":"Asar verduras","taskRestChicken":"Reposar pollo","taskHerbDressing":"Preparar aderezo de hierbas","taskWarmPlates":"Calentar platos","taskPortionProteins":"Porcionar proteínas","taskPrepGarnishes":"Preparar guarniciones","taskWashGreens":"Lavar hojas verdes","taskSanitize":"Desinfectar estación","have":"Hay","need":"Necesita","prep":"Preparar","priority":"Prioridad","undo":"Deshacer","show":"Mostrar","hide":"Ocultar","repeat":"Repetir","area":"Área","welcome":"Bienvenido","onDevice":"En el dispositivo","noAccount":"Sin cuenta","privacy":"Privacidad","ads":"Anuncios","boardsStay":"Los tableros quedan en este dispositivo","googleAds":"Google usa datos del dispositivo y del uso de la app para anuncios","privacyChoices":"Opciones de privacidad","terms":"Términos","support":"Soporte","safety":"Seguridad","legal":"Privacidad y legal","manageSub":"Gestionar suscripción","deleteData":"Eliminar datos locales","steps":"3 pasos","linkPending":"Falta el enlace público de publicación","managedGoogle":"Gestionado por Google cuando corresponde","cancel":"Cancelar","delete":"Eliminar","deleteConfirm":"¿Eliminar datos locales de la app?","about":"Acerca de","adults18":"Adultos 18+","removeAds":"Quitar anuncios","monthlyPlan":"Mensual"}},"pt":{"name":"Português","dir":"ltr","s":{"home":"Início","boards":"Quadros","new":"Novo","live":"Ao vivo","settings":"Configurações","active":"Ativo","quick":"Rápido","recent":"Recentes","now":"Agora","wait":"Em espera","next":"Seguinte","done":"Concluído","template":"Modelo","paste":"Colar","name":"Nome","time":"Hora","station":"Estação","notes":"Notas","tasks":"Tarefas","timing":"Tempo","manual":"Manual","target":"Alvo","custom":"Personalizado","save":"Guardar","upcoming":"Próximos","all":"Todos","pause":"Pausar","resume":"Retomar","alerts":"Alertas","awake":"Tela ativa","compact":"Compacto","haptics":"Hápticos","language":"Idioma","today":"Hoje","onTrack":"No ritmo","open":"Abrir","continue":"Continuar","start":"Começar","details":"Detalhes","back":"Voltar","review":"Rever","check":"Verificar","ready":"Pronto","newTask":"Nova tarefa","edit":"Editar","tomorrow":"Amanhã","dinner":"Jantar","brunch":"Brunch","lateNight":"Noite","lunch":"Almoço","banquet":"Banquete","stationHot":"Estação quente","stationCold":"Preparo frio","stationPastry":"Pastelaria","stationSandwich":"Sanduíches","stationBanquet":"Banquete","taskRoastVeg":"Assar legumes","taskRestChicken":"Descansar frango","taskHerbDressing":"Fazer molho de ervas","taskWarmPlates":"Aquecer pratos","taskPortionProteins":"Porcionar proteínas","taskPrepGarnishes":"Preparar guarnições","taskWashGreens":"Lavar folhas","taskSanitize":"Higienizar estação","have":"Tem","need":"Precisa","prep":"Preparar","priority":"Prioridade","undo":"Desfazer","show":"Mostrar",
