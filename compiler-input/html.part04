@@ -1,0 +1,212 @@
+x="41" ry="30" fill="#759048"/>
+                    <ellipse cx="344" cy="190" rx="38" ry="28" fill="#D06D3D"/>
+                    <ellipse cx="375" cy="239" rx="29" ry="24" fill="#D6AA42"/>
+                    <ellipse cx="309" cy="257" rx="48" ry="27" fill="#9FB967"/>
+                    <circle cx="242" cy="247" r="17" fill="#B94832"/>
+                    <path d="M221 157c34-36 73-36 94-4-39-4-60 6-94 4Z" fill="#46682F"/>
+                    <path d="M324 147c34-28 73-18 84 19-34-15-60-15-84-19Z" fill="#5E7C3B"/>
+                  </g>
+                  <rect x="55" y="286" width="174" height="62" rx="18" fill="#B98E60" transform="rotate(-8 55 286)"/>
+                  <path d="M55 90c38 30 72 43 120 45" fill="none" stroke="#6C7849" stroke-width="5" stroke-linecap="round"/>
+                  <g fill="#7F8C58">
+                    <ellipse cx="91" cy="101" rx="21" ry="7" transform="rotate(28 91 101)"/>
+                    <ellipse cx="126" cy="122" rx="20" ry="7" transform="rotate(-26 126 122)"/>
+                    <ellipse cx="161" cy="132" rx="20" ry="7" transform="rotate(26 161 132)"/>
+                  </g>
+                  <circle cx="456" cy="72" r="24" fill="#E2D5C0" opacity=".6"/>
+                </svg>
+                <div class="hero-chip"><span class="dot"></span><span data-i18n="onTrack">On track</span></div>
+                <div class="hero-scrim"></div>
+              </div>
+              <div class="hero-copy">
+                <div class="eyebrow" data-i18n="today">Today</div>
+                <h1 class="serif" id="homeHeroBoardName" data-i18n="dinner">Dinner</h1>
+                <p><span id="homeHeroBoardArea" data-i18n="stationHot">Hot station</span> · <span id="homeHeroBoardTime" data-time="18:30">18:30</span></p>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="sectionhead">
+                <div><h2 data-i18n="active">Active</h2></div>
+                <span class="badge olive" data-i18n="onTrack">On track</span>
+              </div>
+              <div class="card active-board">
+                <div class="row">
+                  <div class="grow">
+                    <div class="kicker" id="homeActiveBoardName" data-i18n="dinner">Dinner</div>
+                    <div class="board-title" id="homeActiveBoardArea" data-i18n="stationHot">Hot station</div>
+                    <div class="meta"><span aria-hidden="true">◷</span> <span id="homeActiveBoardTime" data-time="18:30">18:30</span> · <span aria-hidden="true">≡</span> <span id="homeActiveTaskCount" data-number="12">12</span> · <span aria-hidden="true">⏱</span> <span id="homeActiveDuration" data-duration-minutes="195">195</span></div>
+                  </div>
+                  <div class="progress-ring"><span id="homeActiveProgress" data-percent="0.72">72%</span></div>
+                </div>
+                <div class="status-strip" aria-label="Live board shortcuts">
+                  <button class="status now" data-home-lane="now" data-i18n-aria="now">
+                    <b data-lane-count-home="now">4</b><span data-i18n="now">Now</span>
+                  </button>
+                  <button class="status wait" data-home-lane="waiting" data-i18n-aria="wait">
+                    <b data-lane-count-home="waiting">3</b><span data-i18n="wait">Waiting</span>
+                  </button>
+                  <button class="status next" data-home-lane="next" data-i18n-aria="next">
+                    <b data-lane-count-home="next">2</b><span data-i18n="next">Next</span>
+                  </button>
+                  <button class="status done" data-home-lane="done" data-i18n-aria="done">
+                    <b data-lane-count-home="done">3</b><span data-i18n="done">Done</span>
+                  </button>
+                </div>
+                <button class="primary full hero-action" data-view="live"><span>▶</span><span data-i18n="continue">Continue</span></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="side-stack">
+            <div class="section">
+              <div class="sectionhead"><div><h2 data-i18n="start">Start</h2></div></div>
+              <div class="start-grid">
+                <button class="start-card primary-start" data-repeat-board>
+                  <span class="start-icon">↻</span>
+                  <span><strong data-i18n="repeat">Repeat</strong></span>
+                </button>
+                <button class="start-card" data-view="create">
+                  <span class="start-icon">+</span>
+                  <span><strong data-i18n="new">New</strong></span>
+                </button>
+              </div>
+              <button class="paste-inline" data-paste-start><span aria-hidden="true">⎘</span><span data-i18n="paste">Paste</span></button>
+            </div>
+
+            <div class="section">
+              <div class="sectionhead"><div><h2 data-i18n="recent">Recent</h2></div><button class="linkbtn" data-view="boards" data-i18n="all">All</button></div>
+              <div class="card list">
+                <div class="listrow">
+                  <div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#E8DFD0"/><circle cx="18" cy="22" r="8" fill="#749047"/><circle cx="30" cy="27" r="9" fill="#D16A3A"/></svg></div>
+                  <div class="grow"><b data-i18n="brunch">Brunch</b><div class="meta"><span data-i18n="stationPastry">Pastry</span> · <span data-number="14">14</span></div></div><span class="badge olive" data-i18n="done">Done</span>
+                </div>
+                <div class="listrow">
+                  <div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#E5DDCE"/><ellipse cx="24" cy="24" rx="14" ry="9" fill="#8D5A3F"/></svg></div>
+                  <div class="grow"><b data-i18n="dinner">Dinner</b><div class="meta"><span data-i18n="stationHot">Hot station</span> · <span data-number="16">16</span></div></div><span class="badge olive" data-i18n="done">Done</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-create">
+        <h1 class="page-title" data-i18n="new">New</h1>
+        <div class="flow-steps" >
+          <div class="flow-step active" data-step-dot="1"><b>1</b><span data-i18n="details">Details</span></div>
+          <i></i>
+          <div class="flow-step" data-step-dot="2"><b>2</b><span data-i18n="tasks">Tasks</span></div>
+          <i></i>
+          <div class="flow-step" data-step-dot="3"><b>3</b><span data-i18n="timing">Timing</span></div>
+        </div>
+
+        <div class="create-flow">
+          <section class="create-step active" data-step="1">
+          <div class="card form-card">
+            <div class="field"><label data-i18n="name">Name</label><input class="input" id="createName" value="" data-i18n-placeholder="dinner"></div>
+            <div class="field"><label data-i18n="time">Time</label><input class="input" id="createTime" type="time" value="18:30"></div>
+            <div class="field"><label data-i18n="area">Area</label><select class="input" id="createArea"><option value="stationHot" data-i18n="stationHot">Hot station</option><option value="stationCold" data-i18n="stationCold">Cold prep</option><option value="stationPastry" data-i18n="stationPastry">Pastry</option></select></div>
+            <div class="field"><label data-i18n="notes">Notes</label><textarea class="input" id="createNotes"></textarea></div>
+          </div>
+          </section>
+
+          <section class="create-step" data-step="2">
+            <div class="sectionhead"><div><h2 data-i18n="tasks">Tasks</h2></div><button class="secondary icon-plus" id="addTask" data-i18n-aria="newTask">+</button></div>
+            <div class="card form-card" id="taskList">
+              <div class="task-card"><span class="drag">⠿</span><div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#E8DCC7"/><circle cx="17" cy="22" r="8" fill="#C75D35"/><circle cx="29" cy="18" r="8" fill="#6F8A38"/><circle cx="30" cy="30" r="7" fill="#D39B2E"/></svg></div><div class="grow"><div class="task-name" data-i18n="taskRoastVeg">Roast vegetables</div><div class="task-meta">×<span data-number="3">3</span></div><div class="qty-strip"><span><b data-i18n="have">Have</b> 1</span><span><b data-i18n="need">Need</b> 3</span><span><b data-i18n="prep">Prep</b> 2</span></div></div><span class="badge" data-duration-minutes="10">10</span></div>
+              <div class="task-card"><span class="drag">⠿</span><div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#ECE4D7"/><ellipse cx="24" cy="25" rx="15" ry="9" fill="#9B5835"/><path d="M15 19c7-6 17-7 23 0" fill="none" stroke="#6F452C" stroke-width="3"/></svg></div><div class="grow"><div class="task-name" data-i18n="taskRestChicken">Rest cooked chicken</div><div class="task-meta">×<span data-number="6">6</span></div><div class="qty-strip"><span><b data-i18n="have">Have</b> 0</span><span><b data-i18n="need">Need</b> 6</span><span><b data-i18n="prep">Prep</b> 6</span></div></div><span class="badge terra" data-duration-minutes="15">15</span></div>
+              <div class="task-card"><span class="drag">⠿</span><div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#E2EAD5"/><rect x="17" y="11" width="14" height="26" rx="5" fill="#70883E"/><rect x="19" y="7" width="10" height="7" rx="2" fill="#425926"/></svg></div><div class="grow"><div class="task-name" data-i18n="taskHerbDressing">Make herb dressing</div><div class="task-meta"><span data-number-decimal="1.2">1.2</span> L</div><div class="qty-strip"><span><b data-i18n="have">Have</b> 0.4 L</span><span><b data-i18n="need">Need</b> 1.2 L</span><span><b data-i18n="prep">Prep</b> 0.8 L</span></div></div><span class="badge" data-duration-minutes="5">5</span></div>
+              <div class="task-card"><span class="drag">⠿</span><div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#EEE9DF"/><ellipse cx="24" cy="30" rx="13" ry="4" fill="#A9A49A"/><ellipse cx="24" cy="26" rx="13" ry="4" fill="#C9C4BB"/></svg></div><div class="grow"><div class="task-name" data-i18n="taskWarmPlates">Warm plates</div><div class="task-meta">×<span data-number="30">30</span></div><div class="qty-strip"><span><b data-i18n="have">Have</b> 10</span><span><b data-i18n="need">Need</b> 30</span><span><b data-i18n="prep">Prep</b> 20</span></div></div><span class="badge amber" data-duration-minutes="10">10</span></div>
+            </div>
+
+          </section>
+
+          <section class="create-step" data-step="3">
+            <div class="section">
+              <div class="sectionhead"><div><h2 data-i18n="timing">Timing</h2></div></div>
+              <div class="card form-card">
+                <div class="seg" id="timingSeg"><button data-timing-mode="manual" data-i18n="manual">Manual</button><button class="active" data-timing-mode="target" data-i18n="target">Target</button><button data-timing-mode="custom" data-i18n="custom">Custom</button></div>
+              </div>
+            </div>
+          </section>
+
+          <div class="create-actions">
+            <button class="secondary" id="createBack" data-i18n="back">Back</button>
+            <button class="primary" id="createNext" data-i18n="next">Next</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-boards">
+        <div class="row between">
+          <div><h1 class="page-title" data-i18n="boards">Boards</h1></div>
+          <button class="secondary" data-view="create"><span>+</span> <span data-i18n="new">New</span></button>
+        </div>
+        <div class="board-tabs"><button class="active" data-board-filter="upcoming" data-i18n="upcoming">Upcoming</button><button data-board-filter="all" data-i18n="all">All</button></div>
+
+        <div class="feature-board" id="featureBoard">
+          <div class="feature-art">
+            <svg viewBox="0 0 760 180" preserveAspectRatio="xMidYMid slice">
+              <defs><linearGradient id="fbg" x1="0" x2="1"><stop stop-color="#788255"/><stop offset="1" stop-color="#37422E"/></linearGradient></defs>
+              <rect width="760" height="180" fill="url(#fbg)"/>
+              <circle cx="615" cy="72" r="110" fill="#A8B68B" opacity=".23"/>
+              <ellipse cx="545" cy="110" rx="118" ry="33" fill="#22271E" opacity=".2"/>
+              <ellipse cx="545" cy="92" rx="102" ry="62" fill="#6C4B2B"/>
+              <ellipse cx="545" cy="80" rx="91" ry="51" fill="#F1E8D9"/>
+              <circle cx="512" cy="76" r="22" fill="#6E8D43"/><circle cx="560" cy="74" r="22" fill="#C9693B"/><circle cx="586" cy="98" r="18" fill="#D6A73B"/>
+            </svg>
+          </div>
+          <div class="feature-content">
+            <div class="kicker" style="color:#CDD4C7"><span data-i18n="today">Today</span> · <span id="featureBoardArea" data-i18n="stationHot">Hot station</span></div>
+            <h3 id="featureBoardName" data-i18n="dinner">Dinner</h3>
+            <p><span aria-hidden="true">≡</span> <span id="featureBoardTaskCount" data-number="12">12</span> · <span aria-hidden="true">◷</span> <span id="featureBoardTime" data-time="18:30">18:30</span> · <span id="featureBoardProgress" data-percent="0.72">72%</span></p>
+            <div class="feature-actions"><span class="badge olive" id="featureBoardStatus" data-i18n="onTrack">On track</span><button id="featureBoardOpen" data-board-open="demo-dinner" data-i18n="open">Open</button></div>
+          </div>
+        </div>
+
+        <div class="boards-grid">
+          <div>
+            <div class="sectionhead"><div><h2 id="boardsListHeading" data-i18n="upcoming">Upcoming</h2></div></div>
+            <div class="card list" id="boardsList">
+              <div class="listrow" data-view="live"><div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#E8DCC7"/><circle cx="18" cy="21" r="8" fill="#6F8A38"/><circle cx="30" cy="26" r="8" fill="#C75D35"/></svg></div><div class="grow"><b data-i18n="dinner">Dinner</b><div class="meta" data-i18n="stationHot">Hot station</div></div><div style="text-align:right"><b data-time="18:30">18:30</b><div class="meta" data-percent="0.72">72%</div></div></div>
+              <div class="listrow"><div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#E5E1DA"/><rect x="10" y="16" width="28" height="14" rx="5" fill="#C7B89C"/></svg></div><div class="grow"><b data-i18n="lateNight">Late night</b><div class="meta" data-i18n="stationSandwich">Sandwich</div></div><div style="text-align:right"><b data-time="22:30">22:30</b><div class="meta" data-percent="0">0%</div></div></div>
+              <div class="listrow"><div class="thumb"><svg viewBox="0 0 48 48"><rect width="48" height="48" fill="#EEE7D9"/><circle cx="24" cy="24" r="12" fill="#DDD2BD"/></svg></div><div class="grow"><b data-i18n="lunch">Lunch</b><div class="meta"><span data-i18n="tomorrow">Tomorrow</span> · <span data-i18n="stationHot">Hot station</span></div></div><div style="text-align:right"><b data-time="11:30">11:30</b><div class="meta" data-percent="0">0%</div></div></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="sectionhead"><div><h2 data-i18n="template">Template</h2></div></div>
+            <div class="card list">
+              <div class="listrow"><div class="grow"><b data-i18n="dinner">Dinner</b><div class="meta"><span data-i18n="stationHot">Hot station</span> · <span data-number="18">18</span></div></div><span>›</span></div>
+              <div class="listrow"><div class="grow"><b data-i18n="brunch">Brunch</b><div class="meta"><span data-i18n="stationPastry">Pastry</span> · <span data-number="14">14</span></div></div><span>›</span></div>
+              <div class="listrow"><div class="grow"><b data-i18n="banquet">Banquet</b><div class="meta"><span data-i18n="stationBanquet">Banquet</span> · <span data-number="22">22</span></div></div><span>›</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen screen-live" id="screen-live">
+        <div class="live-shell">
+          <div class="live-top">
+            <div class="row between">
+              <div><div class="live-head-title" id="liveBoardName" data-i18n="dinner">Dinner</div><div class="live-head-sub"><span id="liveBoardArea" data-i18n="stationHot">Hot station</span> · <span data-i18n="target">Target</span> <span id="liveBoardTime" data-time="18:30">18:30</span></div></div>
+              <span class="badge" style="background:#3A3E36;color:white" data-i18n="live">Live</span>
+            </div>
+          </div>
+
+          <div class="alert" id="liveWaitingAlert">
+            <div class="alert-icon">⌛</div>
+            <div class="grow"><strong id="waitingAlertTitle" data-i18n="taskRestChicken">Rest chicken</strong><small id="waitingAlertMeta"><span data-i18n="wait">Waiting</span> <span data-duration-minutes="2">2</span> · <span data-i18n="ready">Ready</span> <span data-time="18:05">18:05</span></small></div>
+            <button class="attention-action" id="waitingAlertReview" data-review-task="chicken" data-i18n="review">Review</button>
+          </div>
+
+          <div class="targetbar">
+            <div><div class="kicker" data-i18n="target">Target</div><div class="meta" id="liveTargetTime" data-time="18:30">18:30</div></div>
+            <div style="text-align:center"><div class="bigtime" id="countdown" data-duration-seconds="1124">18:44</div></div>
+            <button class="secondary" id="pauseAll" data-i18n="pause">Pause</button>
+          </div>
+
+          <div class="live-state-tabs" role="tablist" data-i18n-aria="live">
+            <button class="active now" data-live-lane="now"><span data-i18n="now">Now</span><b data-lane-count="now">2</b></button>
+            <button class="wait" data-live-lane="waiting"><span data-i18n="wait">Waiting</span><b data-lane-count="waiting">2</b>
