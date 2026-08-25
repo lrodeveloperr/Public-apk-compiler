@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
@@ -57,6 +56,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -132,7 +132,8 @@ fun KitchenPrepClosedTestApp(
             LocalLayoutDirection provides if (rtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
         ) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
-                val profile = kitchenWindowProfile(maxWidth, maxHeight)
+                val fontScale = LocalDensity.current.fontScale
+                val profile = kitchenWindowProfile(maxWidth, maxHeight, fontScale)
                 val layoutType =
                     if (profile.useRail) NavigationSuiteType.NavigationRail
                     else NavigationSuiteType.NavigationBar
