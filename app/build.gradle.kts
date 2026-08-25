@@ -42,7 +42,9 @@ android {
 }
 
 dependencies {
-    val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
+    // Stable Compose line that compiles against Android 36. This only changes the
+    // host dependency set; the approved/frozen app HTML and its UI/logic are untouched.
+    val composeBom = platform("androidx.compose:compose-bom:2025.08.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
