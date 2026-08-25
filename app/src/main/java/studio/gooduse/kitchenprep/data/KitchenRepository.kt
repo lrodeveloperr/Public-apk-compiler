@@ -265,13 +265,13 @@ class KitchenRepository(context: Context) {
         )
     }
 
-    suspend fun setLanguage(tag: String) = editSettings(KEY_LANGUAGE, tag)
-    suspend fun setTheme(mode: String) = editSettings(KEY_THEME, mode)
-    suspend fun setAlerts(value: Boolean) = editSettings(KEY_ALERTS, value)
-    suspend fun setAwake(value: Boolean) = editSettings(KEY_AWAKE, value)
-    suspend fun setCompact(value: Boolean) = editSettings(KEY_COMPACT, value)
-    suspend fun setHaptics(value: Boolean) = editSettings(KEY_HAPTICS, value)
-    suspend fun acknowledgeSafety() = editSettings(KEY_SAFETY, true)
+    suspend fun setLanguage(tag: String) = editSetting(KEY_LANGUAGE, tag)
+    suspend fun setTheme(mode: String) = editSetting(KEY_THEME, mode)
+    suspend fun setAlerts(value: Boolean) = editSetting(KEY_ALERTS, value)
+    suspend fun setAwake(value: Boolean) = editSetting(KEY_AWAKE, value)
+    suspend fun setCompact(value: Boolean) = editSetting(KEY_COMPACT, value)
+    suspend fun setHaptics(value: Boolean) = editSetting(KEY_HAPTICS, value)
+    suspend fun acknowledgeSafety() = editSetting(KEY_SAFETY, true)
 
     suspend fun clearAllData() {
         db.withTransaction {
@@ -301,12 +301,11 @@ class KitchenRepository(context: Context) {
         }
     }
 
-    private suspend fun editSettings(key: androidx.datastore.preferences.core.Preferences.Key<Boolean>, value: Boolean) {
-        appContext.kitchenPreferences.edit { it[key] = value }
-    }
-
-    private suspend fun editSettings(key: androidx.datastore.preferences.core.Preferences.Key<String>, value: String) {
-        appContext.kitchenPreferences.edit { it[key] = value }
+    private suspend fun <T> editSetting(
+        key: androidx.datastore.preferences.core.Preferences.Key<T>,
+        value: T,
+    ) {
+        appContext.kitchenPreferences.edit { preferences -> preferences[key] = value }
     }
 
     companion object {
