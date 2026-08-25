@@ -1,18 +1,28 @@
 package studio.gooduse.kitchenprep.monetization
 
 import android.content.Context
+import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -20,9 +30,6 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import studio.gooduse.kitchenprep.BuildConfig
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -47,74 +54,84 @@ private object MobileAdsBootstrap {
 }
 
 /**
- * Closed-testing only: loads Google's official demo banner ID. The HTML's fixed
- * 50dp rail remains the geometry source of truth, so the real test ad cannot shift
- * the approved layout.
+ * Native anchored-adaptive Google test banner.
+ *
+ * The host reserves no visible rail while an eligible request is loading and expands to
+ * the SDK-computed adaptive height only after onAdLoaded. No-fill collapses the
+ * rail again. Refresh cadence is left entirely to the Google Mobile Ads SDK.
  */
 @Composable
-fun NativeTestBanner(modifier: Modifier = Modifier) {
+fun NativeTestBanner(
+    modifier: Modifier = Modifier,
+    onLoadedChanged: (Boolean) -> Unit = {},
+) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var loaded by remember { mutableStateOf(false) }
-    var retryAttempt by remember { mutableIntStateOf(0) }
-    var retryJob by remember { mutableStateOf<Job?>(null) }
+    val currentCallback by rememberUpdatedState(onLoadedChanged)
 
-    val adView = remember {
-        AdView(context).apply {
-            adUnitId = BuildConfig.ADMOB_BANNER_ID
-            setAdSize(AdSize.BANNER)
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+        val widthDp = maxWidth.value.toInt().coerceAtLeast(1)
+        val adSize = remember(widthDp) {
+            AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, widthDp)
         }
-    }
+        var loaded by remember(widthDp) { mutableStateOf(false) }
 
-    DisposableEffect(adView) {
-        var disposed = false
+        val adView = remember(widthDp) {
+            AdView(context).apply {
+                adUnitId = BuildConfig.ADMOB_BANNER_ID
+                setAdSize(adSize)
+            }
+        }
 
-        fun load() {
-            if (disposed) return
+        DisposableEffect(adView) {
+            var disposed = false
             adView.adListener = object : AdListener() {
                 override fun onAdLoaded() {
-                    loaded = true
-                    retryAttempt = 0
-                    retryJob?.cancel()
-                    retryJob = null
+                    if (!disposed) {
+                        loaded = true
+                        currentCallback(true)
+                    }
                 }
 
                 override fun onAdFailedToLoad(error: LoadAdError) {
-                    loaded = false
-                    retryJob?.cancel()
-                    retryJob = null
-                    val nonRetriable = error.code == AdRequest.ERROR_CODE_NO_FILL ||
-                        error.code == AdRequest.ERROR_CODE_INVALID_REQUEST
-                    if (nonRetriable || retryAttempt >= 3 || disposed) return
-                    val delayMs = (2_000L * (1L shl retryAttempt)).coerceAtMost(30_000L)
-                    retryAttempt++
-                    retryJob = scope.launch {
-                        delay(delayMs)
-                        if (!disposed) load()
+                    if (!disposed) {
+                        loaded = false
+                        currentCallback(false)
                     }
                 }
             }
-            adView.loadAd(AdRequest.Builder().build())
+
+            MobileAdsBootstrap.ensure(context) {
+                if (!disposed) {
+                    val nonPersonalizedExtras = Bundle().apply { putString("npa", "1") }
+                    val request = AdRequest.Builder()
+                        .addNetworkExtrasBundle(AdMobAdapter::class.java, nonPersonalizedExtras)
+                        .build()
+                    adView.loadAd(request)
+                }
+            }
+
+            onDispose {
+                disposed = true
+                currentCallback(false)
+                adView.destroy()
+            }
         }
 
-        MobileAdsBootstrap.ensure(context) { if (!disposed) load() }
-
-        onDispose {
-            disposed = true
-            retryJob?.cancel()
-            retryJob = null
-            adView.destroy()
+        val railHeight = if (loaded) adSize.height.dp else 0.dp
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(railHeight)
+                .clipToBounds()
+                .background(androidx.compose.material3.MaterialTheme.colorScheme.surface),
+            contentAlignment = Alignment.Center,
+        ) {
+            AndroidView(
+                factory = { adView },
+                modifier = Modifier
+                    .requiredSize(width = adSize.width.dp, height = adSize.height.dp)
+                    .alpha(if (loaded) 1f else 0f),
+            )
         }
-    }
-
-    Box(
-        modifier = modifier.alpha(if (loaded) 1f else 0f)
-            .background(Color(0xFFFFFCF8)),
-        contentAlignment = Alignment.Center,
-    ) {
-        AndroidView(
-            factory = { adView },
-            modifier = Modifier.size(width = 320.dp, height = 50.dp),
-        )
     }
 }
