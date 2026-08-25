@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "studio.gooduse.kitchenprep"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "studio.gooduse.kitchenprep"
@@ -120,7 +120,7 @@ tasks.named("preBuild").configure {
 }
 
 dependencies {
-    val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
+    val composeBom = platform("androidx.compose:compose-bom:2025.08.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
