@@ -140,7 +140,7 @@ fun kitchenWindowProfile(width: Dp, height: Dp, fontScale: Float = 1f): KitchenW
     }
     val maxWidth = if (width >= 1200.dp) 1440.dp else 0.dp
     val heroTitle = when {
-        compactHeight && width < 840.dp -> 29.sp
+        compactHeight -> 29.sp
         width >= 1200.dp && !compactHeight -> 52.sp
         width >= 840.dp && !compactHeight -> 38.sp
         width >= 600.dp -> 36.sp

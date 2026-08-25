@@ -37,7 +37,7 @@ fun BoardsScreen(
             OutlinedButton(onClick = onNew, modifier = Modifier.heightIn(min = 52.dp)) {
                 Icon(Icons.Default.Add, contentDescription = null)
                 Spacer(Modifier.width(4.dp))
-                Text(tr("new", "New"))
+                Text(tr("new", "New"), maxLines = 2)
             }
         }
         Spacer(Modifier.height(12.dp))
@@ -45,13 +45,13 @@ fun BoardsScreen(
             FilterChip(
                 selected = filter == "UPCOMING",
                 onClick = { filter = "UPCOMING" },
-                label = { Text(tr("upcoming", "Upcoming")) },
+                label = { Text(tr("upcoming", "Upcoming"), maxLines = 2) },
                 modifier = Modifier.weight(1f),
             )
             FilterChip(
                 selected = filter == "ALL",
                 onClick = { filter = "ALL" },
-                label = { Text(tr("all", "All")) },
+                label = { Text(tr("all", "All"), maxLines = 2) },
                 modifier = Modifier.weight(1f),
             )
         }
@@ -103,10 +103,11 @@ fun FeatureBoard(board: BoardEntity, tr: Translate, onOpen: () -> Unit) {
                 Spacer(Modifier.height(12.dp))
                 OutlinedButton(
                     onClick = onOpen,
+                    modifier = Modifier.heightIn(min = 48.dp),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
                     border = BorderStroke(1.dp, Color.White.copy(alpha = 0.35f)),
                 ) {
-                    Text(tr("open", "Open"), fontWeight = FontWeight.Black)
+                    Text(tr("open", "Open"), fontWeight = FontWeight.Black, maxLines = 2)
                 }
             }
         }

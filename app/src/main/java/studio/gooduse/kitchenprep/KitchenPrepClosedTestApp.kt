@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
@@ -132,8 +133,11 @@ fun KitchenPrepClosedTestApp(
             LocalLayoutDirection provides if (rtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
         ) {
             BoxWithConstraints(Modifier.fillMaxSize()) {
-                val fontScale = LocalDensity.current.fontScale
-                val profile = kitchenWindowProfile(maxWidth, maxHeight, fontScale)
+                val profile = kitchenWindowProfile(
+                    width = maxWidth,
+                    height = maxHeight,
+                    fontScale = LocalDensity.current.fontScale,
+                )
                 val layoutType =
                     if (profile.useRail) NavigationSuiteType.NavigationRail
                     else NavigationSuiteType.NavigationBar
@@ -153,33 +157,33 @@ fun KitchenPrepClosedTestApp(
                             selected = screen == AppScreen.HOME,
                             onClick = { viewModel.navigate(AppScreen.HOME) },
                             icon = { Icon(Icons.Default.Home, contentDescription = null) },
-                            label = { Text(tr("home", "Home"), maxLines = 1) },
+                            label = { Text(tr("home", "Home"), maxLines = 2) },
                         )
                         item(
                             selected = screen == AppScreen.LIVE,
                             onClick = { viewModel.openLive() },
                             icon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
-                            label = { Text(tr("live", "Live"), maxLines = 1) },
+                            label = { Text(tr("live", "Live"), maxLines = 2) },
                         )
                         item(
                             selected = screen == AppScreen.BOARDS,
                             onClick = { viewModel.navigate(AppScreen.BOARDS) },
                             icon = { Icon(Icons.Default.Dashboard, contentDescription = null) },
-                            label = { Text(tr("boards", "Boards"), maxLines = 1) },
+                            label = { Text(tr("boards", "Boards"), maxLines = 2) },
                         )
                         if (profile.useRail) {
                             item(
                                 selected = screen == AppScreen.CREATE,
                                 onClick = { viewModel.startNewBoard() },
                                 icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                                label = { Text(tr("new", "New"), maxLines = 1) },
+                                label = { Text(tr("new", "New"), maxLines = 2) },
                             )
                         }
                         item(
                             selected = screen == AppScreen.SETTINGS,
                             onClick = { viewModel.navigate(AppScreen.SETTINGS) },
                             icon = { Icon(Icons.Default.Settings, contentDescription = null) },
-                            label = { Text(tr("settings", "Settings"), maxLines = 1) },
+                            label = { Text(tr("settings", "Settings"), maxLines = 2) },
                         )
                     },
                 ) {

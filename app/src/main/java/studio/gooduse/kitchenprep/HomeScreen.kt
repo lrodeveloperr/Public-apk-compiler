@@ -61,7 +61,7 @@ fun HomeScreen(
     } else {
         Column(
             modifier = contentModifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(if (profile.compactHeight) 12.dp else 20.dp),
         ) {
             HomeActiveBlock(selectedBoard, tasks, profile, tr, onContinue, onLane)
             HeroBoard(selectedBoard, profile, tr)
@@ -409,7 +409,13 @@ fun StartCard(
                 }
             }
             Spacer(Modifier.width(12.dp))
-            Text(label, fontSize = 13.sp, fontWeight = FontWeight.Black)
+            Text(
+                label,
+                modifier = Modifier.weight(1f),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Black,
+                maxLines = 2,
+            )
         }
     }
 }

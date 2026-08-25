@@ -41,6 +41,7 @@ fun CreateScreen(
     Column(
         modifier = centeredContentModifier(profile)
             .fillMaxSize()
+            .imePadding()
             .padding(horizontal = profile.gutter),
     ) {
         Column(
@@ -80,7 +81,7 @@ fun CreateScreen(
                     modifier = Modifier.weight(0.7f).heightIn(min = 52.dp),
                     shape = RoundedCornerShape(15.dp),
                 ) {
-                    Text(tr("back", "Back"), fontWeight = FontWeight.Black)
+                    Text(tr("back", "Back"), fontWeight = FontWeight.Black, maxLines = 2)
                 }
                 Button(
                     onClick = onNext,
@@ -91,6 +92,7 @@ fun CreateScreen(
                     Text(
                         if (step == 3) tr("start", "Start") else tr("next", "Next"),
                         fontWeight = FontWeight.Black,
+                        maxLines = 2,
                     )
                 }
             }
@@ -202,7 +204,11 @@ fun NativeTimeField(
     ) {
         Icon(Icons.Default.AccessTime, contentDescription = null)
         Spacer(Modifier.width(8.dp))
-        Text("$label · ${formatMinutesOfDay(minutes)}", fontWeight = FontWeight.Bold)
+        Text(
+            "$label · ${formatMinutesOfDay(minutes)}",
+            fontWeight = FontWeight.Bold,
+            maxLines = 2,
+        )
     }
     if (show) {
         val state = rememberTimePickerState(
@@ -350,7 +356,7 @@ fun TaskEditorCard(
                 }
             }
 
-            if (profile.width >= 500.dp) {
+            if (profile.width >= 600.dp && !profile.largeText) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     QuantityField(
                         value = task.have,
@@ -477,14 +483,14 @@ fun PasteScreen(
             ) {
                 Icon(Icons.Default.ArrowBack, contentDescription = null)
                 Spacer(Modifier.width(4.dp))
-                Text(tr("back", "Back"))
+                Text(tr("back", "Back"), maxLines = 2)
             }
             Button(
                 onClick = onImport,
                 enabled = text.isNotBlank(),
                 modifier = Modifier.weight(1.2f).heightIn(min = 52.dp),
             ) {
-                Text(tr("continue", "Continue"), fontWeight = FontWeight.Black)
+                Text(tr("continue", "Continue"), fontWeight = FontWeight.Black, maxLines = 2)
             }
         }
     }

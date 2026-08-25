@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import java.util.Locale
 
@@ -28,12 +29,19 @@ fun SectionHeader(
             modifier = Modifier.weight(1f),
             fontSize = 17.sp,
             fontWeight = FontWeight.Black,
+            maxLines = 2,
         )
         when {
             customAction != null -> customAction()
             action != null && onAction != null -> {
                 TextButton(onClick = onAction) {
-                    Text(action, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        action,
+                        fontWeight = FontWeight.Black,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 2,
+                        textAlign = TextAlign.Center,
+                    )
                 }
             }
             trailing != null -> StatusBadge(trailing)
@@ -107,7 +115,12 @@ fun PrimaryButton(
             Icon(icon, contentDescription = null)
             Spacer(Modifier.width(6.dp))
         }
-        Text(text, fontWeight = FontWeight.Black)
+        Text(
+            text,
+            fontWeight = FontWeight.Black,
+            maxLines = 2,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 

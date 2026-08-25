@@ -51,6 +51,7 @@ fun SettingsScreen(
         WorkbenchCard {
             SettingRow(
                 title = tr("language", "Language"),
+                stacked = profile.width < 360.dp || profile.largeText,
                 trailing = {
                     Box {
                         OutlinedButton(
@@ -89,6 +90,7 @@ fun SettingsScreen(
             HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f))
             SettingRow(
                 title = tr("theme", "Theme"),
+                stacked = profile.width < 600.dp || profile.largeText,
                 trailing = {
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(5.dp),
@@ -182,15 +184,32 @@ fun SettingsScreen(
 @Composable
 fun SettingRow(
     title: String,
+    stacked: Boolean = false,
     trailing: @Composable () -> Unit,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Text(title, modifier = Modifier.weight(1f), fontSize = 14.sp, fontWeight = FontWeight.Bold)
-        trailing()
+    if (stacked) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(title, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 2)
+            trailing()
+        }
+    } else {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                title,
+                modifier = Modifier.weight(1f),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+            )
+            trailing()
+        }
     }
 }
 

@@ -104,7 +104,7 @@ fun LiveScreen(
                             horizontal = if (profile.compactHeight) 10.dp else 12.dp,
                             vertical = 10.dp,
                         )
-                        .padding(bottom = 20.dp),
+                        .padding(bottom = if (undoAvailable) 92.dp else 20.dp),
                 ) {
                     LaneColumn(
                         lane = lane,
@@ -146,7 +146,10 @@ fun LiveScreen(
                             onNow = { tactile(); onNow(it) },
                             onPriority = { tactile(); onPriority(it) },
                             onRepeat = onRepeat,
-                            modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                            modifier = Modifier
+                                .weight(1f)
+                                .verticalScroll(rememberScrollState())
+                                .padding(bottom = if (undoAvailable) 92.dp else 0.dp),
                         )
                     }
                 }
@@ -242,6 +245,7 @@ fun WaitingAlert(count: Int, tr: Translate, onClick: () -> Unit) {
             )
             OutlinedButton(
                 onClick = onClick,
+                modifier = Modifier.heightIn(min = 48.dp),
                 border = BorderStroke(1.dp, Color.White.copy(alpha = 0.38f)),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
             ) {
@@ -487,7 +491,8 @@ fun TimerChip(
     }
     Surface(
         modifier = Modifier
-            .heightIn(min = 40.dp)
+            .heightIn(min = 48.dp)
+            .widthIn(max = 152.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(10.dp),
         color = background,
