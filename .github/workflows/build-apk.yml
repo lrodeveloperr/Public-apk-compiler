@@ -47,11 +47,23 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for density in mdpi hdpi xhdpi xxhdpi; do
-            mkdir -p "app/src/main/res/mipmap-${density}"
-            base64 -d "compiler-input/icons/icon-${density}.b64" > "app/src/main/res/mipmap-${density}/ic_launcher.png"
-            cp "app/src/main/res/mipmap-${density}/ic_launcher.png" "app/src/main/res/mipmap-${density}/ic_launcher_round.png"
-          done
+          python - <<'PY'
+          from pathlib import Path
+          import base64, re
+
+          for density in ("mdpi", "hdpi", "xhdpi", "xxhdpi"):
+              source = Path(f"compiler-input/icons/icon-{density}.b64")
+              text = source.read_text(encoding="utf-8", errors="ignore")
+              clean = re.sub(r"[^A-Za-z0-9+/=]", "", text)
+              data = base64.b64decode(clean, validate=False)
+              if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+                  raise SystemExit(f"{density}: reconstructed launcher icon is not a PNG")
+              out = Path(f"app/src/main/res/mipmap-{density}")
+              out.mkdir(parents=True, exist_ok=True)
+              (out / "ic_launcher.png").write_bytes(data)
+              (out / "ic_launcher_round.png").write_bytes(data)
+              print(density, len(data), "bytes")
+          PY
 
       - name: Build debug APK
         shell: bash
