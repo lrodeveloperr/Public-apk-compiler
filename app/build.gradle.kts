@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "studio.gooduse.kitchenprep"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "studio.gooduse.kitchenprep"
