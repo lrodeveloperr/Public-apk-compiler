@@ -293,14 +293,16 @@ fun BoardArt(modifier: Modifier = Modifier) {
 
 @Composable
 fun ProgressRing(progress: Int) {
+    val trackColor = MaterialTheme.colorScheme.surfaceVariant
+    val progressColor = MaterialTheme.colorScheme.primary
     Box(contentAlignment = Alignment.Center, modifier = Modifier.size(66.dp)) {
         Canvas(Modifier.fillMaxSize()) {
             drawCircle(
-                color = MaterialTheme.colorScheme.surfaceVariant,
+                color = trackColor,
                 style = Stroke(width = 7.dp.toPx()),
             )
             drawArc(
-                color = MaterialTheme.colorScheme.primary,
+                color = progressColor,
                 startAngle = -90f,
                 sweepAngle = progress.coerceIn(0, 100) * 3.6f,
                 useCenter = false,
