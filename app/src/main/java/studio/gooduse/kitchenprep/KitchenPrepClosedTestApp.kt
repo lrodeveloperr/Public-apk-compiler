@@ -16,15 +16,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
@@ -109,8 +115,9 @@ fun KitchenPrepClosedTestApp(
 
     SideEffect {
         val background = if (dark) KitchenColors.DarkCanvas else KitchenColors.Canvas
+        val navigationSurface = if (dark) KitchenColors.DarkSurfaceSoft else KitchenColors.Surface
         activity.window.statusBarColor = background.toArgb()
-        activity.window.navigationBarColor = background.toArgb()
+        activity.window.navigationBarColor = navigationSurface.toArgb()
         WindowInsetsControllerCompat(activity.window, activity.window.decorView).apply {
             isAppearanceLightStatusBars = !dark
             isAppearanceLightNavigationBars = !dark
@@ -140,6 +147,8 @@ fun KitchenPrepClosedTestApp(
                 val layoutType =
                     if (profile.useRail) NavigationSuiteType.NavigationRail
                     else NavigationSuiteType.NavigationBar
+                val navigationColors = kitchenNavigationSuiteColors()
+                val navigationItemColors = kitchenNavigationSuiteItemColors()
 
                 var adLoaded by remember { mutableStateOf(false) }
                 val adEligible =
@@ -148,8 +157,29 @@ fun KitchenPrepClosedTestApp(
                     if (!adEligible) adLoaded = false
                 }
 
+                val scaffoldInsets = when {
+                    profile.useRail && adLoaded -> WindowInsets.safeDrawing.only(
+                        WindowInsetsSides.Horizontal + WindowInsetsSides.Top
+                    )
+                    profile.useRail -> WindowInsets.safeDrawing.only(
+                        WindowInsetsSides.Horizontal + WindowInsetsSides.Top + WindowInsetsSides.Bottom
+                    )
+                    else -> WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+                }
+                val bannerInsets = if (profile.useRail && adLoaded) {
+                    WindowInsets.safeDrawing.only(
+                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                    )
+                } else {
+                    WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+                }
+
                 NavigationSuiteScaffold(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .imePadding(),
                     layoutType = layoutType,
+                    navigationSuiteColors = navigationColors,
                     containerColor = MaterialTheme.colorScheme.background,
                     navigationSuiteItems = {
                         item(
@@ -157,18 +187,21 @@ fun KitchenPrepClosedTestApp(
                             onClick = { viewModel.navigate(AppScreen.HOME) },
                             icon = { Icon(Icons.Default.Home, contentDescription = null) },
                             label = { Text(tr("home", "Home"), maxLines = 2) },
+                            colors = navigationItemColors,
                         )
                         item(
                             selected = screen == AppScreen.LIVE,
                             onClick = { viewModel.openLive() },
                             icon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
                             label = { Text(tr("live", "Live"), maxLines = 2) },
+                            colors = navigationItemColors,
                         )
                         item(
                             selected = screen == AppScreen.BOARDS,
                             onClick = { viewModel.navigate(AppScreen.BOARDS) },
                             icon = { Icon(Icons.Default.Dashboard, contentDescription = null) },
                             label = { Text(tr("boards", "Boards"), maxLines = 2) },
+                            colors = navigationItemColors,
                         )
                         if (profile.useRail) {
                             item(
@@ -176,6 +209,7 @@ fun KitchenPrepClosedTestApp(
                                 onClick = { viewModel.startNewBoard() },
                                 icon = { Icon(Icons.Default.Add, contentDescription = null) },
                                 label = { Text(tr("new", "New"), maxLines = 2) },
+                                colors = navigationItemColors,
                             )
                         }
                         item(
@@ -183,6 +217,7 @@ fun KitchenPrepClosedTestApp(
                             onClick = { viewModel.navigate(AppScreen.SETTINGS) },
                             icon = { Icon(Icons.Default.Settings, contentDescription = null) },
                             label = { Text(tr("settings", "Settings"), maxLines = 2) },
+                            colors = navigationItemColors,
                         )
                     },
                 ) {
@@ -194,6 +229,7 @@ fun KitchenPrepClosedTestApp(
                         Scaffold(
                             modifier = Modifier.weight(1f),
                             containerColor = MaterialTheme.colorScheme.background,
+                            contentWindowInsets = scaffoldInsets,
                             topBar = {
                                 if (!profile.useRail) {
                                     KitchenTopBar(profile = profile)
@@ -203,7 +239,8 @@ fun KitchenPrepClosedTestApp(
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(inner),
+                                    .padding(inner)
+                                    .consumeWindowInsets(inner),
                             ) {
                                 when (screen) {
                                     AppScreen.HOME -> HomeScreen(
@@ -309,12 +346,12 @@ fun KitchenPrepClosedTestApp(
 
                         if (adEligible) {
                             NativeTestBanner(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .windowInsetsPadding(bannerInsets),
                                 onLoadedChanged = { adLoaded = it },
                             )
                         }
-
-                        if (adLoaded && !profile.useRail) Spacer(Modifier.height(16.dp))
                     }
                 }
 
@@ -350,7 +387,6 @@ fun KitchenPrepClosedTestApp(
 @Composable
 private fun KitchenTopBar(profile: KitchenWindowProfile) {
     Surface(
-        modifier = Modifier.statusBarsPadding(),
         color = MaterialTheme.colorScheme.background.copy(alpha = 0.97f),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)),
         shadowElevation = 3.dp,
@@ -358,8 +394,13 @@ private fun KitchenTopBar(profile: KitchenWindowProfile) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(profile.topBarHeight)
-                .padding(horizontal = 16.dp),
+                .windowInsetsPadding(
+                    WindowInsets.safeDrawing.only(
+                        WindowInsetsSides.Horizontal + WindowInsetsSides.Top
+                    )
+                )
+                .heightIn(min = profile.topBarHeight)
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
@@ -375,7 +416,8 @@ private fun KitchenTopBar(profile: KitchenWindowProfile) {
                 "Kitchen Prep Board",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Black,
-                maxLines = 1,
+                lineHeight = 18.sp,
+                maxLines = 2,
             )
         }
     }

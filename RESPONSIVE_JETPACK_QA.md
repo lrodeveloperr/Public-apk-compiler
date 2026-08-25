@@ -40,3 +40,22 @@ Cross-form invariants:
 - Top content respects status-bar insets; bottom navigation owns navigation-bar insets.
 - Ads occupy layout space only after a successful load and remain separate from app controls.
 - No seeded sample boards on a fresh install.
+
+
+## Second senior presentation-runtime verification
+
+Baseline reviewed: `4ba87520b36779ed78d180a17ec170e1c98698bc`.
+
+The correction pass keeps every screen, route, action, palette constant, spacing token, radius and typography choice intact. It changes only top-level runtime ownership and constrained reflow:
+
+| Concern | Verified ownership |
+| --- | --- |
+| Fixed mobile header | The existing inner Material 3 `Scaffold.topBar` remains outside each screen's scrolling content. The top bar now owns top and horizontal `safeDrawing` insets, including display cutouts. |
+| Phone bottom navigation | Material 3 `NavigationBar` remains the sole owner of gesture/three-button navigation insets. Screen content does not apply a second bottom system-bar inset. |
+| Tablet rail | When no ad is visible, scroll content owns the bottom safe-drawing inset. Once the ad loads, that bottom inset moves to the ad rail so the rail remains above system navigation without duplicate blank space. |
+| Ad rail | The adaptive banner remains in normal layout flow between screen content and app navigation. It reserves no banner height before a successful load. |
+| IME | A root `imePadding()` inset owner resizes the entire adaptive scaffold; nested system-bar modifiers consume only any remaining inset, keeping navigation and actions above the keyboard without double padding. |
+| Large text | The mobile app title keeps the same 15sp token but may reflow to two lines; the bar retains its approved minimum height and grows only when font scaling requires it. |
+| Dark navigation | The bar uses the existing dark raised surface and matching on-surface icon/text colors; light-mode colors remain on the approved surface/olive treatment. |
+
+Verification scope for this pass: source-of-truth SHA checks, Compose API/inset-consumption semantic review, navigation/action call-site preservation, and scoped-diff review. Runtime screenshot/emulator QA still requires the matrix above; this document does not claim an APK build.

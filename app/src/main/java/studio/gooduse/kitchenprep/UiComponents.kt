@@ -4,6 +4,9 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.*
 import androidx.compose.material3.*
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteColors
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItemColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
@@ -95,6 +98,51 @@ fun WorkbenchCard(
         border = BorderStroke(1.dp, borderColor),
         shadowElevation = 4.dp,
         content = content,
+    )
+}
+
+@Composable
+fun kitchenNavigationSuiteColors(): NavigationSuiteColors {
+    val dark = MaterialTheme.colorScheme.background == KitchenColors.DarkCanvas
+    val navigationBarSurface = if (dark) {
+        MaterialTheme.colorScheme.surfaceVariant
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
+    return NavigationSuiteDefaults.colors(
+        navigationBarContainerColor = navigationBarSurface,
+        navigationBarContentColor = MaterialTheme.colorScheme.onSurface,
+        navigationRailContainerColor = MaterialTheme.colorScheme.surface,
+        navigationRailContentColor = MaterialTheme.colorScheme.onSurface,
+    )
+}
+
+@Composable
+fun kitchenNavigationSuiteItemColors(): NavigationSuiteItemColors {
+    val dark = MaterialTheme.colorScheme.background == KitchenColors.DarkCanvas
+    val selectedContent = if (dark) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+    val unselectedContent = MaterialTheme.colorScheme.onSurfaceVariant
+    val indicator = MaterialTheme.colorScheme.primaryContainer
+
+    return NavigationSuiteDefaults.itemColors(
+        navigationBarItemColors = NavigationBarItemDefaults.colors(
+            selectedIconColor = selectedContent,
+            selectedTextColor = selectedContent,
+            indicatorColor = indicator,
+            unselectedIconColor = unselectedContent,
+            unselectedTextColor = unselectedContent,
+        ),
+        navigationRailItemColors = NavigationRailItemDefaults.colors(
+            selectedIconColor = selectedContent,
+            selectedTextColor = selectedContent,
+            indicatorColor = indicator,
+            unselectedIconColor = unselectedContent,
+            unselectedTextColor = unselectedContent,
+        ),
     )
 }
 
