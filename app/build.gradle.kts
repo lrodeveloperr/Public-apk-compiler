@@ -44,8 +44,8 @@ android {
 
     sourceSets {
         getByName("main") {
-            assets.srcDir(layout.buildDirectory.dir("generated/kpbAssets"))
-            res.srcDir(layout.buildDirectory.dir("generated/kpbRes"))
+            assets.srcDir(layout.buildDirectory.dir("generated/kpbAssets").get().asFile)
+            res.srcDir(layout.buildDirectory.dir("generated/kpbRes").get().asFile)
         }
     }
 }
