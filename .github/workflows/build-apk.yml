@@ -35,7 +35,7 @@ jobs:
         with:
           gradle-version: '9.5.0'
 
-      - name: Reconstruct frozen approved HTML
+      - name: Reconstruct approved HTML
         shell: bash
         run: |
           set -euo pipefail
@@ -43,26 +43,44 @@ jobs:
           cat compiler-input/html.part* > app/src/main/assets/kitchen_prep_board.html
           echo "ecb21222ee589b0578774c4c3c3d6d15a08a6d3c271163f468f204a13194a131  app/src/main/assets/kitchen_prep_board.html" | sha256sum -c -
 
-      - name: Reconstruct launcher icon
+      - name: Apply QA fixes to packaged app
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          import base64, re
+          python compiler-input/html_qa_patch.py app/src/main/assets/kitchen_prep_board.html
+          echo "c0fdb6d4d9b5f5deb62e4b45cfe98a52963b7e58fe1f02caf5f9369c2433448a  app/src/main/assets/kitchen_prep_board.html" | sha256sum -c -
+          python compiler-input/native_qa_patch.py
 
-          source = Path("compiler-input/icons/icon-mdpi.b64")
-          text = source.read_text(encoding="utf-8", errors="ignore")
-          clean = re.sub(r"[^A-Za-z0-9+/=]", "", text)
-          data = base64.b64decode(clean, validate=False)
-          if not data.startswith(b"\x89PNG\r\n\x1a\n"):
-              raise SystemExit("reconstructed launcher icon is not a PNG")
-          out = Path("app/src/main/res/mipmap-mdpi")
-          out.mkdir(parents=True, exist_ok=True)
-          (out / "ic_launcher.png").write_bytes(data)
-          (out / "ic_launcher_round.png").write_bytes(data)
-          print("launcher icon", len(data), "bytes")
-          PY
+      - name: Build canonical launcher icons
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq librsvg2-bin
+          for spec in "mdpi:48" "hdpi:72" "xhdpi:96" "xxhdpi:144" "xxxhdpi:192"; do
+            density="${spec%%:*}"
+            size="${spec#*:}"
+            out="app/src/main/res/mipmap-${density}"
+            mkdir -p "$out"
+            rsvg-convert -w "$size" -h "$size" compiler-input/KitchenPrepBoard-AppIcon-v4.svg -o "$out/ic_launcher.png"
+            cp "$out/ic_launcher.png" "$out/ic_launcher_round.png"
+          done
+
+      - name: Static QA checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'let createStep=1;' app/src/main/assets/kitchen_prep_board.html
+          grep -q 'function seedBoards(){ return \[\]; }' app/src/main/assets/kitchen_prep_board.html
+          grep -q 'AndroidBridge.getClipboardText' app/src/main/assets/kitchen_prep_board.html
+          grep -q 'id="darkModeSwitch"' app/src/main/assets/kitchen_prep_board.html
+          grep -q 'position:sticky;top:0;z-index:60' app/src/main/assets/kitchen_prep_board.html
+          grep -q 'data-release-link="privacy"' app/src/main/assets/kitchen_prep_board.html
+          grep -q 'querySelectorAll("\[data-release-link\]")' app/src/main/assets/kitchen_prep_board.html
+          for density in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            test -s "app/src/main/res/mipmap-${density}/ic_launcher.png"
+            test -s "app/src/main/res/mipmap-${density}/ic_launcher_round.png"
+          done
 
       - name: Build debug APK
         shell: bash
@@ -73,16 +91,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p dist
-          cp app/build/outputs/apk/debug/app-debug.apk dist/KitchenPrepBoard-ClosedTest.apk
-          sha256sum dist/KitchenPrepBoard-ClosedTest.apk > dist/KitchenPrepBoard-ClosedTest.apk.sha256
+          cp app/build/outputs/apk/debug/app-debug.apk dist/KitchenPrepBoard-ClosedTest-v2.apk
+          sha256sum dist/KitchenPrepBoard-ClosedTest-v2.apk > dist/KitchenPrepBoard-ClosedTest-v2.apk.sha256
           ls -lh dist
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: KitchenPrepBoard-ClosedTest-APK
+          name: KitchenPrepBoard-ClosedTest-APK-v2
           path: |
-            dist/KitchenPrepBoard-ClosedTest.apk
-            dist/KitchenPrepBoard-ClosedTest.apk.sha256
+            dist/KitchenPrepBoard-ClosedTest-v2.apk
+            dist/KitchenPrepBoard-ClosedTest-v2.apk.sha256
           if-no-files-found: error
           retention-days: 7
