@@ -6,77 +6,18 @@ import android.content.Context
 import android.content.Intent
 import org.json.JSONObject
 
-
-data class NativeSessionState(
-    val keepAwake: Boolean = false,
-    val shouldPromptNotifications: Boolean = false,
-)
-
-class TimerScheduler(private val context: Context) {
+class TimerScheduler(context: Context) {
     private val appContext = context.applicationContext
     private val alarmManager = appContext.getSystemService(AlarmManager::class.java)
     private val prefs = appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
-    fun syncSession(json: String): NativeSessionState {
-        val root = runCatching { JSONObject(json) }.getOrNull()
-            ?: return NativeSessionState()
-
-        val settings = root.optJSONObject("settings")
-        val alerts = settings?.optBoolean("alerts", true) ?: true
-        val awake = settings?.optBoolean("awake", true) ?: true
-        val currentView = root.optString("currentView", "home")
-        val paused = root.optBoolean("paused", false)
-        val timers = root.optJSONObject("taskTimers") ?: JSONObject()
-        val now = System.currentTimeMillis()
-
-        val active = linkedMapOf<String, Long>()
-        if (alerts && !paused) {
-            val keys = timers.keys()
-            while (keys.hasNext()) {
-                val id = keys.next()
-                val timer = timers.optJSONObject(id) ?: continue
-                val target = timer.optLong("targetEpoch", 0L)
-                if (target > now + 500L) active[id] = target
-            }
-        }
-
-        syncAlarms(active)
-
-        return NativeSessionState(
-            keepAwake = awake && currentView == "live",
-            shouldPromptNotifications = alerts && currentView == "live" && active.isNotEmpty(),
-        )
-    }
-
-    fun restore() {
-        val stored = loadStored()
-        val now = System.currentTimeMillis()
-        val future = stored.filterValues { it > now + 500L }
-        syncAlarms(future)
-    }
-
-    fun clearAll() {
-        val stored = loadStored()
-        stored.keys.forEach(::cancel)
-        prefs.edit().remove(KEY_TIMERS).apply()
-    }
-
-    internal fun onAlarmFired(taskId: String) {
-        val stored = loadStored().toMutableMap()
-        stored.remove(taskId)
-        saveStored(stored)
-    }
-
-    private fun syncAlarms(active: Map<String, Long>) {
-        val old = loadStored()
-        (old.keys - active.keys).forEach(::cancel)
-        active.forEach { (id, target) ->
-            if (old[id] != target) schedule(id, target)
-        }
-        saveStored(active)
-    }
-
-    private fun schedule(taskId: String, targetEpoch: Long) {
+    /**
+     * Schedules a best-effort background alert. The persisted deadline in Room is the
+     * source of truth for the native countdown; alarm delivery never completes a task.
+     * No exact-alarm special access is required for the core product.
+     */
+    fun schedule(taskId: String, targetEpoch: Long) {
+        if (targetEpoch <= System.currentTimeMillis()) return
         val intent = Intent(appContext, TimerAlarmReceiver::class.java)
             .putExtra(EXTRA_TASK_ID, taskId)
         val pending = PendingIntent.getBroadcast(
@@ -85,13 +26,14 @@ class TimerScheduler(private val context: Context) {
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        // Exact UI timing remains driven by targetEpoch in the frozen app. Background
-        // notifications use the policy-light alarm path and may be slightly delayed by
-        // Android power management; no exact-alarm special access is required.
         alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, targetEpoch, pending)
+
+        val stored = loadStored().toMutableMap()
+        stored[taskId] = targetEpoch
+        saveStored(stored)
     }
 
-    private fun cancel(taskId: String) {
+    fun cancel(taskId: String) {
         val intent = Intent(appContext, TimerAlarmReceiver::class.java)
         val pending = PendingIntent.getBroadcast(
             appContext,
@@ -103,6 +45,38 @@ class TimerScheduler(private val context: Context) {
             alarmManager.cancel(pending)
             pending.cancel()
         }
+        val stored = loadStored().toMutableMap()
+        if (stored.remove(taskId) != null) saveStored(stored)
+    }
+
+    fun restore() {
+        val now = System.currentTimeMillis()
+        val stored = loadStored()
+        val future = stored.filterValues { it > now + 500L }
+        stored.keys.minus(future.keys).forEach(::cancel)
+        future.forEach { (taskId, target) ->
+            val intent = Intent(appContext, TimerAlarmReceiver::class.java)
+                .putExtra(EXTRA_TASK_ID, taskId)
+            val pending = PendingIntent.getBroadcast(
+                appContext,
+                stableRequestCode(taskId),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, target, pending)
+        }
+        saveStored(future)
+    }
+
+    fun clearAll() {
+        loadStored().keys.toList().forEach(::cancel)
+        prefs.edit().remove(KEY_TIMERS).apply()
+    }
+
+    internal fun onAlarmFired(taskId: String) {
+        val stored = loadStored().toMutableMap()
+        stored.remove(taskId)
+        saveStored(stored)
     }
 
     private fun loadStored(): Map<String, Long> {

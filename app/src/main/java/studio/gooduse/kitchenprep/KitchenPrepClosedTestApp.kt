@@ -1,331 +1,388 @@
+@file:OptIn(
+    androidx.compose.material3.ExperimentalMaterial3Api::class,
+    androidx.compose.foundation.layout.ExperimentalLayoutApi::class,
+)
+
 package studio.gooduse.kitchenprep
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.graphics.Color as AndroidColor
 import android.net.Uri
-import android.webkit.JavascriptInterface
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.view.WindowManager
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.weight
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import studio.gooduse.kitchenprep.monetization.BillingController
 import studio.gooduse.kitchenprep.monetization.ConsentController
 import studio.gooduse.kitchenprep.monetization.NativeTestBanner
-import studio.gooduse.kitchenprep.timers.TimerScheduler
 
-private const val ASSET_URL = "file:///android_asset/kitchen_prep_board.html"
+typealias Translate = (String, String) -> String
 
 @Composable
 fun KitchenPrepClosedTestApp(
     activity: MainActivity,
     billingController: BillingController,
     consentController: ConsentController,
+    viewModel: KitchenViewModel = viewModel(),
 ) {
-    val billing by billingController.state.collectAsState()
-    val consent by consentController.state.collectAsState()
-    val dark = isSystemInDarkTheme()
-    var webView by remember { mutableStateOf<WebView?>(null) }
-    val timerScheduler = remember { TimerScheduler(activity.applicationContext) }
+    val billing by billingController.state.collectAsStateWithLifecycle()
+    val consent by consentController.state.collectAsStateWithLifecycle()
+    val settings by viewModel.settings.collectAsStateWithLifecycle()
+    val screen by viewModel.screen.collectAsStateWithLifecycle()
+    val boards by viewModel.boards.collectAsStateWithLifecycle()
+    val selectedBoard by viewModel.selectedBoard.collectAsStateWithLifecycle()
+    val selectedTasks by viewModel.selectedTasks.collectAsStateWithLifecycle()
+    val liveLane by viewModel.liveLane.collectAsStateWithLifecycle()
+    val createDraft by viewModel.createDraft.collectAsStateWithLifecycle()
+    val createStep by viewModel.createStep.collectAsStateWithLifecycle()
+    val pasteText by viewModel.pasteText.collectAsStateWithLifecycle()
+    val showSafety by viewModel.safetyConfirmation.collectAsStateWithLifecycle()
+    val undoTaskId by viewModel.lastUndoTaskId.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+    val strings = remember { KitchenStrings.load(context) }
+    val languageTag = settings.languageTag.ifBlank { "en" }
+    val tr: Translate = remember(strings, languageTag) {
+        { key, fallback -> strings.text(languageTag, key, fallback) }
+    }
+    val rtl = strings.isRtl(languageTag)
+
+    val dark = when (settings.themeMode) {
+        "dark" -> true
+        "light" -> false
+        else -> androidx.compose.foundation.isSystemInDarkTheme()
+    }
 
     SideEffect {
-        activity.window.navigationBarColor = if (dark) AndroidColor.rgb(18, 22, 17) else AndroidColor.rgb(245, 240, 232)
-        WindowInsetsControllerCompat(activity.window, activity.window.decorView)
-            .isAppearanceLightNavigationBars = !dark
-    }
-
-    val bridge = remember(activity, billingController, consentController, timerScheduler) {
-        NativeBridge(activity, billingController, consentController, timerScheduler)
-    }
-
-    MaterialTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = if (dark) Color(0xFF121611) else Color(0xFFF5F0E8)) {
-            BoxWithConstraints(Modifier.fillMaxSize()) {
-                val tablet = maxWidth >= 840.dp
-
-                AndroidView(
-                    modifier = Modifier.fillMaxSize(),
-                    factory = { context ->
-                        WebView(context).apply {
-                            setBackgroundColor(if (dark) AndroidColor.rgb(18, 22, 17) else AndroidColor.rgb(245, 240, 232))
-                            settings.javaScriptEnabled = true
-                            settings.domStorageEnabled = true
-                            settings.databaseEnabled = true
-                            settings.loadsImagesAutomatically = true
-                            settings.mediaPlaybackRequiresUserGesture = true
-                            settings.allowContentAccess = false
-                            settings.allowFileAccess = true
-                            settings.setSupportMultipleWindows(false)
-                            addJavascriptInterface(bridge, "AndroidBridge")
-                            webChromeClient = WebChromeClient()
-                            webViewClient = object : WebViewClient() {
-                                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                                    val uri = request?.url ?: return false
-                                    if (uri.scheme == "https") {
-                                        bridge.openExternal(uri.toString())
-                                        return true
-                                    }
-                                    return false
-                                }
-
-                                override fun onPageFinished(view: WebView, url: String?) {
-                                    super.onPageFinished(view, url)
-                                    injectNativeHooks(view)
-                                    applyPreviewState(view, dark)
-                                    applyNativeState(view, billing.active, billing.verifiedThisSession, billing.formattedPrice, billing.billingPeriod, billing.lastError)
-                                    webView = view
-                                }
-                            }
-                            loadUrl(ASSET_URL)
-                            webView = this
-                        }
-                    },
-                    update = { view ->
-                        view.setBackgroundColor(if (dark) AndroidColor.rgb(18, 22, 17) else AndroidColor.rgb(245, 240, 232))
-                        applyPreviewState(view, dark)
-                        applyNativeState(view, billing.active, billing.verifiedThisSession, billing.formattedPrice, billing.billingPeriod, billing.lastError)
-                    },
-                )
-
-                // Real Google test inventory overlays the exact reserved ad rail from
-                // the frozen HTML. The placeholder remains visible until a test ad
-                // actually loads, avoiding layout shift or a blank rail.
-                if (billing.verifiedThisSession && !billing.active && consent.canRequestAds) {
-                    val railModifier = if (tablet) {
-                        Modifier
-                            .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
-                            .height(58.dp)
-                            .padding(start = 104.dp)
-                    } else {
-                        Modifier
-                            .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
-                            .padding(bottom = 80.dp)
-                            .height(50.dp)
-                    }
-                    NativeTestBanner(modifier = railModifier)
-                }
-            }
+        val background = if (dark) KitchenColors.DarkCanvas else KitchenColors.Canvas
+        activity.window.statusBarColor = background.toArgb()
+        activity.window.navigationBarColor = background.toArgb()
+        WindowInsetsControllerCompat(activity.window, activity.window.decorView).apply {
+            isAppearanceLightStatusBars = !dark
+            isAppearanceLightNavigationBars = !dark
+        }
+        val keepOn = settings.keepAwake && screen == AppScreen.LIVE
+        if (keepOn) {
+            activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
 
     BackHandler {
-        val wv = webView
-        if (wv == null) {
-            activity.finish()
-        } else {
-            wv.evaluateJavascript("Boolean(window.kpbNativeBack && window.kpbNativeBack())") { result ->
-                if (result != "true") activity.finish()
-            }
-        }
-    }
-}
-
-private fun applyPreviewState(view: WebView, dark: Boolean) {
-    val theme = if (dark) "dark" else "light"
-    view.evaluateJavascript(
-        "if(window.applyPreviewState){window.applyPreviewState({theme:'$theme',platform:'android'});}",
-        null,
-    )
-}
-
-private fun applyNativeState(
-    view: WebView,
-    active: Boolean,
-    verified: Boolean,
-    price: String?,
-    period: String?,
-    error: String?,
-) {
-    val safePrice = price.jsQuoted()
-    val safePeriod = period.jsQuoted()
-    val safeError = error.jsQuoted()
-    view.evaluateJavascript(
-        "if(window.kpbNativeApply){window.kpbNativeApply(${active},${verified},$safePrice,$safePeriod,$safeError);}",
-        null,
-    )
-}
-
-private fun String?.jsQuoted(): String {
-    if (this == null) return "null"
-    return buildString {
-        append('\'')
-        for (c in this@jsQuoted) {
-            when (c) {
-                '\\' -> append("\\\\")
-                '\'' -> append("\\'")
-                '\n' -> append("\\n")
-                '\r' -> append("\\r")
-                else -> append(c)
-            }
-        }
-        append('\'')
-    }
-}
-
-private fun injectNativeHooks(view: WebView) {
-    view.evaluateJavascript(NATIVE_HOOKS_JS, null)
-}
-
-private val NATIVE_HOOKS_JS = """
-(function(){
-  if(window.__kpbNativeHooksInstalled) return;
-  window.__kpbNativeHooksInstalled=true;
-
-  window.open=function(url){
-    try{ if(window.AndroidBridge && url) AndroidBridge.openExternal(String(url)); }catch(_){}
-    return null;
-  };
-
-  var subscriptionButtons=Array.prototype.slice.call(document.querySelectorAll('[data-release-link="subscription"]'));
-  if(subscriptionButtons[0]) subscriptionButtons[0].addEventListener('click',function(e){
-    e.preventDefault(); e.stopImmediatePropagation();
-    try{ AndroidBridge.purchaseRemoveAds(); }catch(_){}
-  },true);
-  if(subscriptionButtons[1]) subscriptionButtons[1].addEventListener('click',function(e){
-    e.preventDefault(); e.stopImmediatePropagation();
-    try{ AndroidBridge.manageSubscription(); }catch(_){}
-  },true);
-
-  Array.prototype.forEach.call(document.querySelectorAll('[data-privacy-choices]'),function(btn){
-    btn.addEventListener('click',function(e){
-      e.preventDefault(); e.stopImmediatePropagation();
-      try{ AndroidBridge.showPrivacyOptions(); }catch(_){}
-    },true);
-  });
-
-  var deleteConfirm=document.querySelector('[data-delete-confirm]');
-  if(deleteConfirm) deleteConfirm.addEventListener('click',function(){
-    try{ AndroidBridge.clearNativeTimerState(); }catch(_){}
-  },true);
-
-  var originalSave=window.saveSession;
-  if(typeof originalSave==='function'){
-    window.saveSession=function(){
-      var result=originalSave.apply(this,arguments);
-      try{ AndroidBridge.syncSession(JSON.stringify(window.kpbSessionState||{})); }catch(_){}
-      return result;
-    };
-  }
-
-  var lastNativeError=null;
-  window.kpbNativeApply=function(active,verified,price,period,error){
-    var ad=document.querySelector('.ad-reservation');
-    var style=document.getElementById('kpb-native-sub-style');
-    if(active){
-      if(!style){
-        style=document.createElement('style');
-        style.id='kpb-native-sub-style';
-        style.textContent='.ad-reservation{display:none!important}.shell{padding-bottom:92px!important}@media(min-width:840px){.shell{padding-bottom:24px!important}}';
-        document.head.appendChild(style);
-      }
-      if(ad) ad.style.visibility='hidden';
-    }else{
-      if(style) style.remove();
-      if(ad) ad.style.visibility=verified?'visible':'hidden';
+        if (!viewModel.backToHome()) activity.finish()
     }
 
-    if(error && error!==lastNativeError){
-      lastNativeError=error;
-      try{ if(typeof window.showReleaseToast==='function') window.showReleaseToast(error); }catch(_){}
-    }
+    KitchenTheme(settings.themeMode) {
+        CompositionLocalProvider(
+            LocalLayoutDirection provides if (rtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
+        ) {
+            BoxWithConstraints(Modifier.fillMaxSize()) {
+                val profile = kitchenWindowProfile(maxWidth, maxHeight)
+                val layoutType =
+                    if (profile.useRail) NavigationSuiteType.NavigationRail
+                    else NavigationSuiteType.NavigationBar
 
-    if(subscriptionButtons[0]){
-      subscriptionButtons[0].dataset.nativeActive=active?'1':'0';
-      var small=subscriptionButtons[0].querySelector('small');
-      if(small && price){
-        var first=small.querySelector('span');
-        if(first) first.textContent=price;
-      }
-    }
-  };
+                var adLoaded by remember { mutableStateOf(false) }
+                val adEligible =
+                    billing.verifiedThisSession && !billing.active && consent.canRequestAds
+                LaunchedEffect(adEligible) {
+                    if (!adEligible) adLoaded = false
+                }
 
-  window.kpbNativeBack=function(){
-    var active=document.querySelector('.screen.active');
-    if(!active || active.id==='screen-home') return false;
-    if(typeof window.setView==='function'){ window.setView('home'); return true; }
-    return false;
-  };
+                NavigationSuiteScaffold(
+                    layoutType = layoutType,
+                    containerColor = MaterialTheme.colorScheme.background,
+                    navigationSuiteItems = {
+                        item(
+                            selected = screen == AppScreen.HOME,
+                            onClick = { viewModel.navigate(AppScreen.HOME) },
+                            icon = { Icon(Icons.Default.Home, contentDescription = null) },
+                            label = { Text(tr("home", "Home"), maxLines = 1) },
+                        )
+                        item(
+                            selected = screen == AppScreen.LIVE,
+                            onClick = { viewModel.openLive() },
+                            icon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
+                            label = { Text(tr("live", "Live"), maxLines = 1) },
+                        )
+                        item(
+                            selected = screen == AppScreen.BOARDS,
+                            onClick = { viewModel.navigate(AppScreen.BOARDS) },
+                            icon = { Icon(Icons.Default.Dashboard, contentDescription = null) },
+                            label = { Text(tr("boards", "Boards"), maxLines = 1) },
+                        )
+                        if (profile.useRail) {
+                            item(
+                                selected = screen == AppScreen.CREATE,
+                                onClick = { viewModel.startNewBoard() },
+                                icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                                label = { Text(tr("new", "New"), maxLines = 1) },
+                            )
+                        }
+                        item(
+                            selected = screen == AppScreen.SETTINGS,
+                            onClick = { viewModel.navigate(AppScreen.SETTINGS) },
+                            icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+                            label = { Text(tr("settings", "Settings"), maxLines = 1) },
+                        )
+                    },
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background),
+                    ) {
+                        Scaffold(
+                            modifier = Modifier.weight(1f),
+                            containerColor = MaterialTheme.colorScheme.background,
+                            topBar = {
+                                if (!profile.useRail) {
+                                    KitchenTopBar(profile = profile)
+                                }
+                            },
+                        ) { inner ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(inner),
+                            ) {
+                                when (screen) {
+                                    AppScreen.HOME -> HomeScreen(
+                                        boards = boards,
+                                        selectedBoard = selectedBoard,
+                                        tasks = selectedTasks,
+                                        profile = profile,
+                                        tr = tr,
+                                        onContinue = { viewModel.openLive(selectedBoard?.id) },
+                                        onLane = { viewModel.openLive(selectedBoard?.id, it) },
+                                        onRepeat = { viewModel.repeatMostRecent(selectedBoard?.id) },
+                                        onNew = viewModel::startNewBoard,
+                                        onPaste = viewModel::openPaste,
+                                        onAll = { viewModel.navigate(AppScreen.BOARDS) },
+                                        onOpenBoard = { viewModel.openLive(it) },
+                                    )
 
-  try{ AndroidBridge.syncSession(JSON.stringify(window.kpbSessionState||{})); }catch(_){}
-})();
-""".trimIndent()
+                                    AppScreen.CREATE -> CreateScreen(
+                                        draft = createDraft,
+                                        step = createStep,
+                                        profile = profile,
+                                        tr = tr,
+                                        onName = viewModel::updateName,
+                                        onArea = viewModel::updateArea,
+                                        onNotes = viewModel::updateNotes,
+                                        onTime = viewModel::updateTargetMinutes,
+                                        onTiming = viewModel::updateTimingMode,
+                                        onAddTask = viewModel::addTask,
+                                        onDeleteTask = viewModel::deleteTask,
+                                        onUpdateTask = viewModel::updateTask,
+                                        canAdvance = viewModel.canAdvanceCreate(),
+                                        onBack = viewModel::previousCreateStep,
+                                        onNext = viewModel::nextCreateStep,
+                                    )
 
-class NativeBridge(
-    private val activity: MainActivity,
-    private val billingController: BillingController,
-    private val consentController: ConsentController,
-    private val timerScheduler: TimerScheduler,
-) {
-    @JavascriptInterface
-    fun openExternal(url: String) {
-        val uri = runCatching { Uri.parse(url) }.getOrNull() ?: return
-        if (uri.scheme != "https") return
-        activity.runOnUiThread {
-            try {
-                activity.startActivity(Intent(Intent.ACTION_VIEW, uri))
-            } catch (_: ActivityNotFoundException) {
-                // No external browser available. The app remains usable.
-            }
-        }
-    }
+                                    AppScreen.PASTE -> PasteScreen(
+                                        text = pasteText,
+                                        profile = profile,
+                                        tr = tr,
+                                        onText = viewModel::setPasteText,
+                                        onBack = { viewModel.navigate(AppScreen.HOME) },
+                                        onImport = viewModel::importPaste,
+                                    )
 
-    @JavascriptInterface
-    fun purchaseRemoveAds() {
-        activity.runOnUiThread { billingController.purchase(activity) }
-    }
+                                    AppScreen.BOARDS -> BoardsScreen(
+                                        boards = boards,
+                                        profile = profile,
+                                        tr = tr,
+                                        onNew = viewModel::startNewBoard,
+                                        onOpen = { viewModel.openLive(it) },
+                                    )
 
-    @JavascriptInterface
-    fun manageSubscription() {
-        activity.runOnUiThread { billingController.openManageSubscription(activity) }
-    }
+                                    AppScreen.LIVE -> LiveScreen(
+                                        board = selectedBoard,
+                                        tasks = selectedTasks,
+                                        lane = liveLane,
+                                        profile = profile,
+                                        settings = settings,
+                                        tr = tr,
+                                        undoAvailable = undoTaskId != null,
+                                        onLane = viewModel::selectLane,
+                                        onPause = viewModel::setBoardPaused,
+                                        onToggleTimer = { task ->
+                                            if (!task.timerRunning && settings.alerts) {
+                                                activity.ensureNotificationPermission()
+                                            }
+                                            viewModel.toggleTimer(task)
+                                        },
+                                        onDone = { viewModel.moveTask(it, LiveLane.DONE) },
+                                        onCheck = viewModel::checkWaiting,
+                                        onNow = { viewModel.moveTask(it, LiveLane.NOW) },
+                                        onPriority = viewModel::togglePriority,
+                                        onUndo = viewModel::undoLastTask,
+                                        onClearUndo = viewModel::clearUndo,
+                                        onRepeat = { viewModel.repeatMostRecent(selectedBoard?.id) },
+                                    )
 
-    @JavascriptInterface
-    fun showPrivacyOptions() {
-        activity.runOnUiThread { consentController.showPrivacyOptions(activity) }
-    }
+                                    AppScreen.SETTINGS -> SettingsScreen(
+                                        settings = settings,
+                                        strings = strings,
+                                        profile = profile,
+                                        billingPrice = billing.formattedPrice,
+                                        consentPrivacyRequired = consent.privacyOptionsRequired,
+                                        tr = tr,
+                                        onLanguage = viewModel::setLanguage,
+                                        onTheme = viewModel::setTheme,
+                                        onAlerts = viewModel::setAlerts,
+                                        onAwake = viewModel::setAwake,
+                                        onCompact = viewModel::setCompact,
+                                        onHaptics = viewModel::setHaptics,
+                                        onPrivacy = { activity.openExternal(BuildConfig.PRIVACY_POLICY_URL) },
+                                        onTerms = { activity.openExternal(BuildConfig.TERMS_URL) },
+                                        onSupport = { activity.openExternal(BuildConfig.SUPPORT_URL) },
+                                        onSafety = { activity.openExternal(BuildConfig.SAFETY_URL) },
+                                        onPrivacyChoices = { consentController.showPrivacyOptions(activity) },
+                                        onRemoveAds = { billingController.purchase(activity) },
+                                        onManageSubscription = { billingController.openManageSubscription(activity) },
+                                        onDelete = viewModel::clearAllData,
+                                    )
+                                }
+                            }
+                        }
 
-    @JavascriptInterface
-    fun syncSession(json: String) {
-        val state = timerScheduler.syncSession(json)
-        activity.runOnUiThread {
-            if (state.keepAwake) {
-                activity.window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            } else {
-                activity.window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
+                        if (adEligible) {
+                            NativeTestBanner(
+                                modifier = Modifier.fillMaxWidth(),
+                                onLoadedChanged = { adLoaded = it },
+                            )
+                        }
 
-            if (state.shouldPromptNotifications && android.os.Build.VERSION.SDK_INT >= 33) {
-                val permission = android.Manifest.permission.POST_NOTIFICATIONS
-                if (ContextCompat.checkSelfPermission(activity, permission) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                    val prefs = activity.getSharedPreferences("kpb_native", android.content.Context.MODE_PRIVATE)
-                    if (!prefs.getBoolean("notification_prompted", false)) {
-                        prefs.edit().putBoolean("notification_prompted", true).apply()
-                        ActivityCompat.requestPermissions(activity, arrayOf(permission), 4102)
+                        if (adLoaded && !profile.useRail) Spacer(Modifier.height(16.dp))
                     }
+                }
+
+                if (showSafety) {
+                    AlertDialog(
+                        onDismissRequest = viewModel::dismissSafetyConfirmation,
+                        title = { Text(tr("safety", "Safety")) },
+                        text = {
+                            Text(
+                                tr(
+                                    "foodSafetyDisclaimer",
+                                    "This app is an organizational aid only. It does not guarantee food safety or doneness.",
+                                )
+                            )
+                        },
+                        dismissButton = {
+                            TextButton(onClick = viewModel::dismissSafetyConfirmation) {
+                                Text(tr("cancel", "Cancel"))
+                            }
+                        },
+                        confirmButton = {
+                            Button(onClick = viewModel::confirmSafetyAndCreate) {
+                                Text(tr("continue", "Continue"))
+                            }
+                        },
+                    )
                 }
             }
         }
     }
+}
 
-    @JavascriptInterface
-    fun clearNativeTimerState() {
-        timerScheduler.clearAll()
+@Composable
+private fun KitchenTopBar(profile: KitchenWindowProfile) {
+    Surface(
+        modifier = Modifier.statusBarsPadding(),
+        color = MaterialTheme.colorScheme.background.copy(alpha = 0.97f),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)),
+        shadowElevation = 3.dp,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(profile.topBarHeight)
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(R.mipmap.ic_launcher),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(if (profile.compactHeight) 36.dp else 40.dp)
+                    .clip(RoundedCornerShape(14.dp)),
+                contentScale = ContentScale.Crop,
+            )
+            Spacer(Modifier.width(11.dp))
+            Text(
+                "Kitchen Prep Board",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Black,
+                maxLines = 1,
+            )
+        }
+    }
+}
+
+fun MainActivity.openExternal(url: String) {
+    val uri = runCatching { Uri.parse(url) }.getOrNull() ?: return
+    if (uri.scheme != "https") return
+    try {
+        startActivity(Intent(Intent.ACTION_VIEW, uri))
+    } catch (_: ActivityNotFoundException) {
+        // Core app remains usable if no browser is installed.
     }
 }

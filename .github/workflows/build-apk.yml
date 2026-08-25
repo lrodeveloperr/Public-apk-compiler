@@ -1,8 +1,6 @@
 name: Build Kitchen Prep Board APK
 
 on:
-  push:
-    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -28,41 +26,12 @@ jobs:
 
       - name: Install Android SDK packages
         shell: bash
-        run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+        run: sdkmanager "platform-tools" "platforms;android-37" "build-tools;37.0.0"
 
       - name: Set up Gradle 9.5
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '9.5.0'
-
-      - name: Reconstruct frozen approved HTML
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p app/src/main/assets
-          cat compiler-input/html.part* > app/src/main/assets/kitchen_prep_board.html
-          echo "ecb21222ee589b0578774c4c3c3d6d15a08a6d3c271163f468f204a13194a131  app/src/main/assets/kitchen_prep_board.html" | sha256sum -c -
-
-      - name: Reconstruct launcher icon
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          import base64, re
-
-          source = Path("compiler-input/icons/icon-mdpi.b64")
-          text = source.read_text(encoding="utf-8", errors="ignore")
-          clean = re.sub(r"[^A-Za-z0-9+/=]", "", text)
-          data = base64.b64decode(clean, validate=False)
-          if not data.startswith(b"\x89PNG\r\n\x1a\n"):
-              raise SystemExit("reconstructed launcher icon is not a PNG")
-          out = Path("app/src/main/res/mipmap-mdpi")
-          out.mkdir(parents=True, exist_ok=True)
-          (out / "ic_launcher.png").write_bytes(data)
-          (out / "ic_launcher_round.png").write_bytes(data)
-          print("launcher icon", len(data), "bytes")
-          PY
 
       - name: Build debug APK
         shell: bash

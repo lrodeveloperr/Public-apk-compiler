@@ -26,11 +26,11 @@
 
 ## New board
 - [x] Name field
-- [x] Native time picker
+- [x] Native time picker / compact-height TimeInput
 - [x] Area menu
 - [x] Notes field
 - [x] Add task
-- [x] Delete/reset task
+- [x] Delete task
 - [x] Task lane chips
 - [x] Task quantity fields
 - [x] Timing mode chips
@@ -38,11 +38,12 @@
 - [x] Next/Create
 - [x] First-board food-safety acknowledgement
 
-## Paste
+## Paste / Android share
 - [x] Paste field
 - [x] Back
 - [x] Import/Next
-- [x] Parsed tasks become a real native board
+- [x] Parsed text becomes editable native tasks before board creation
+- [x] Android ACTION_SEND text/plain follows the same native import path
 - [x] First-board food-safety acknowledgement
 
 ## Boards
@@ -51,11 +52,11 @@
 - [x] All filter
 - [x] Featured board Open
 - [x] Every board row opens the selected board
-- [x] Same stored board-art enum is used as Home
+- [x] Same native BoardArt component is used on Home and Boards
 
 ## Live
 - [x] Review waiting alert -> Waiting lane
-- [x] Pause/Resume all
+- [x] Pause/Resume board
 - [x] Now / Waiting / Next / Done lane tabs
 - [x] Task timer chip starts/pauses timer
 - [x] Now task Done -> Done lane
@@ -64,6 +65,7 @@
 - [x] Next task Now -> Now lane
 - [x] Undo restores last completed task
 - [x] Finished board Repeat -> new reset board
+- [x] Timer expiry never auto-completes a task
 
 ## Settings / legal
 - [x] Language menu -> native per-app locale
@@ -76,16 +78,18 @@
 - [x] Terms -> external HTTPS policy
 - [x] Support -> external HTTPS policy
 - [x] Safety -> external HTTPS policy
-- [x] Privacy choices -> Google UMP
+- [x] Privacy choices -> Google UMP when required
 - [x] Remove ads -> Google Play Billing
 - [x] Manage subscription -> Google Play subscription management
-- [x] Delete local data -> confirmation -> DataStore + timer state cleared
+- [x] Delete local data -> confirmation -> Room + DataStore + timer state cleared
 
 ## Layout invariants
-- [x] Phone top bar is fixed by Scaffold
-- [x] Phone bottom navigation is fixed and uses Android navigation-bar insets
+- [x] Phone top bar respects system status-bar inset
+- [x] Phone bottom navigation is fixed by Material 3 adaptive navigation
 - [x] Ad rail is in layout, not overlaid over app controls
-- [x] Tablet rail uses larger fixed logo/icon/label metrics
-- [x] Repeat/New/Paste cards share one component and one scale system
-- [x] Dark bottom-navigation labels/icons share the same selected/unselected color tokens
+- [x] No visible ad reservation before a successful banner load
+- [x] Tablet navigation rail uses native Material 3 adaptive layout
+- [x] Repeat/New/Paste cards share one scale system
+- [x] Dark navigation labels/icons use Material theme tokens
 - [x] No sample Dinner/Brunch/Lunch/Late-night boards are seeded on a fresh install
+- [x] Phone landscape uses compact-height rules rather than tablet scaling
