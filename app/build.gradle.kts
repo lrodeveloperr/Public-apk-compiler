@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "studio.gooduse.kitchenprep"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "studio.gooduse.kitchenprep"
@@ -70,8 +70,6 @@ val generateKitchenNativeInputs by tasks.registering {
         val resDir = generatedRes.get().asFile
         assetsDir.mkdirs()
 
-        // The old HTML is never packaged. Only its already-approved 31-language
-        // localization dictionary is extracted as plain JSON for the native UI.
         val html = htmlParts.files.sortedBy { it.name }.joinToString(separator = "") { it.readText() }
         val marker = "const I18N="
         val start = html.indexOf(marker)
@@ -106,8 +104,6 @@ val generateKitchenNativeInputs by tasks.registering {
         check(jsonEnd > jsonStart) { "I18N dictionary terminator not found" }
         assetsDir.resolve("i18n.json").writeText(html.substring(jsonStart, jsonEnd).trim())
 
-        // Keep the same approved launcher image as the single logo source used by
-        // the launcher and native top/rail branding.
         val clean = iconSource.readText().replace(Regex("[^A-Za-z0-9+/=]"), "")
         val png = Base64.getDecoder().decode(clean)
         check(png.size > 8 && png.copyOfRange(0, 8).contentEquals(
