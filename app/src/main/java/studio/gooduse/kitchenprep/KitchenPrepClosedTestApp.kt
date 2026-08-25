@@ -107,20 +107,12 @@ fun KitchenPrepClosedTestApp(
     }
     val rtl = strings.isRtl(languageTag)
 
-    val dark = when (settings.themeMode) {
-        "dark" -> true
-        "light" -> false
-        else -> androidx.compose.foundation.isSystemInDarkTheme()
-    }
-
     SideEffect {
-        val background = if (dark) KitchenColors.DarkCanvas else KitchenColors.Canvas
-        val navigationSurface = if (dark) KitchenColors.DarkSurfaceSoft else KitchenColors.Surface
-        activity.window.statusBarColor = background.toArgb()
-        activity.window.navigationBarColor = navigationSurface.toArgb()
+        activity.window.statusBarColor = KitchenColors.Canvas.toArgb()
+        activity.window.navigationBarColor = KitchenColors.Surface.toArgb()
         WindowInsetsControllerCompat(activity.window, activity.window.decorView).apply {
-            isAppearanceLightStatusBars = !dark
-            isAppearanceLightNavigationBars = !dark
+            isAppearanceLightStatusBars = true
+            isAppearanceLightNavigationBars = true
         }
         val keepOn = settings.keepAwake && screen == AppScreen.LIVE
         if (keepOn) {
@@ -134,7 +126,7 @@ fun KitchenPrepClosedTestApp(
         if (!viewModel.backToHome()) activity.finish()
     }
 
-    KitchenTheme(settings.themeMode) {
+    KitchenTheme {
         CompositionLocalProvider(
             LocalLayoutDirection provides if (rtl) LayoutDirection.Rtl else LayoutDirection.Ltr,
         ) {
@@ -326,7 +318,6 @@ fun KitchenPrepClosedTestApp(
                                         consentPrivacyRequired = consent.privacyOptionsRequired,
                                         tr = tr,
                                         onLanguage = viewModel::setLanguage,
-                                        onTheme = viewModel::setTheme,
                                         onAlerts = viewModel::setAlerts,
                                         onAwake = viewModel::setAwake,
                                         onCompact = viewModel::setCompact,

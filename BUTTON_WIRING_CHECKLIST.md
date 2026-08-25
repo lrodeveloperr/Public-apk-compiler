@@ -69,7 +69,7 @@
 
 ## Settings / legal
 - [x] Language menu -> native per-app locale
-- [x] Theme System / Light / Dark
+- [x] Light mode is enforced; no theme selector or dark-mode path
 - [x] Alerts toggle
 - [x] Screen awake toggle
 - [x] Compact toggle
@@ -90,6 +90,6 @@
 - [x] No visible ad reservation before a successful banner load
 - [x] Tablet navigation rail uses native Material 3 adaptive layout
 - [x] Repeat/New/Paste cards share one scale system
-- [x] Dark navigation labels/icons use Material theme tokens
+- [x] Navigation labels/icons use the approved light-theme Material tokens
 - [x] No sample Dinner/Brunch/Lunch/Late-night boards are seeded on a fresh install
 - [x] Phone landscape uses compact-height rules rather than tablet scaling

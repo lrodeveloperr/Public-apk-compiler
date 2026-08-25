@@ -19,7 +19,7 @@ This matrix is the acceptance basis for the native scale pass. It preserves the 
 | Live | One selected lane, fixed native navigation, independently scrollable task content. | Compact task spacing; one lane at a time even when raw width exceeds 840dp. Core task text stays 13sp. | Four equal scrollable lanes; undo affordance has reserved scroll clearance and does not cover the last task action. |
 | Boards | Header, filters, featured board and list share one vertical scroll container. | New/filter labels can wrap without horizontal scrolling. | Uses the same centered content width and native `BoardArt`; no alternate tablet-only visuals. |
 | New / Paste | Scrollable form with fixed 52dp action area. Quantity fields stack on phones. | IME inset keeps Back/Next/Continue reachable; compact native `TimeInput` replaces the tall picker. | Quantity fields share a row only from 600dp with normal font scale; large text forces the safe stacked form. |
-| Settings | Theme controls reflow below their title; language control stacks on very narrow or large-text layouts. | Entire screen scrolls, including legal and subscription rows. | Row treatment is retained where labels and controls have sufficient width. |
+| Settings | Language control stacks on very narrow or large-text layouts; no theme selector is shown. | Entire screen scrolls, including legal and subscription rows. | Row treatment is retained where labels and controls have sufficient width. |
 
 ## Accessibility and localization checks
 
@@ -56,6 +56,6 @@ The correction pass keeps every screen, route, action, palette constant, spacing
 | Ad rail | The adaptive banner remains in normal layout flow between screen content and app navigation. It reserves no banner height before a successful load. |
 | IME | A root `imePadding()` inset owner resizes the entire adaptive scaffold; nested system-bar modifiers consume only any remaining inset, keeping navigation and actions above the keyboard without double padding. |
 | Large text | The mobile app title keeps the same 15sp token but may reflow to two lines; the bar retains its approved minimum height and grows only when font scaling requires it. |
-| Dark navigation | The bar uses the existing dark raised surface and matching on-surface icon/text colors; light-mode colors remain on the approved surface/olive treatment. |
+| Light-only theme | The approved light surface/olive treatment is enforced for Compose, AppCompat and both system bars; no system or dark-mode branch remains. |
 
 Verification scope for this pass: source-of-truth SHA checks, Compose API/inset-consumption semantic review, navigation/action call-site preservation, and scoped-diff review. Runtime screenshot/emulator QA still requires the matrix above; this document does not claim an APK build.

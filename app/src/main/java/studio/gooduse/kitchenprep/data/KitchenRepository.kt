@@ -18,7 +18,6 @@ private val Context.kitchenPreferences by preferencesDataStore(name = "kitchen_p
 
 data class SettingsState(
     val languageTag: String = Locale.getDefault().toLanguageTag(),
-    val themeMode: String = "system",
     val alerts: Boolean = true,
     val keepAwake: Boolean = true,
     val compactLive: Boolean = false,
@@ -61,7 +60,6 @@ class KitchenRepository(context: Context) {
         .map { prefs ->
             SettingsState(
                 languageTag = prefs[KEY_LANGUAGE] ?: Locale.getDefault().toLanguageTag(),
-                themeMode = prefs[KEY_THEME] ?: "system",
                 alerts = prefs[KEY_ALERTS] ?: true,
                 keepAwake = prefs[KEY_AWAKE] ?: true,
                 compactLive = prefs[KEY_COMPACT] ?: false,
@@ -266,7 +264,6 @@ class KitchenRepository(context: Context) {
     }
 
     suspend fun setLanguage(tag: String) = editSetting(KEY_LANGUAGE, tag)
-    suspend fun setTheme(mode: String) = editSetting(KEY_THEME, mode)
     suspend fun setAlerts(value: Boolean) = editSetting(KEY_ALERTS, value)
     suspend fun setAwake(value: Boolean) = editSetting(KEY_AWAKE, value)
     suspend fun setCompact(value: Boolean) = editSetting(KEY_COMPACT, value)
@@ -311,7 +308,6 @@ class KitchenRepository(context: Context) {
     companion object {
         private val VALID_LANES = setOf("NOW", "WAITING", "NEXT", "DONE")
         private val KEY_LANGUAGE = stringPreferencesKey("language_tag")
-        private val KEY_THEME = stringPreferencesKey("theme_mode")
         private val KEY_ALERTS = booleanPreferencesKey("alerts")
         private val KEY_AWAKE = booleanPreferencesKey("keep_awake")
         private val KEY_COMPACT = booleanPreferencesKey("compact_live")

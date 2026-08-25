@@ -1,8 +1,6 @@
 package studio.gooduse.kitchenprep
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
@@ -34,22 +32,6 @@ object KitchenColors {
     val TealSoft = Color(0xFFD5E6E2)
     val Success = Color(0xFF577A45)
 
-    val DarkCanvas = Color(0xFF11140F)
-    val DarkSurface = Color(0xFF1C2119)
-    val DarkSurfaceSoft = Color(0xFF242A20)
-    val DarkInk = Color(0xFFF4F0E7)
-    val DarkInk2 = Color(0xFFD2D4CB)
-    val DarkMuted = Color(0xFFA3A79B)
-    val DarkLine = Color(0xFF363D32)
-    val DarkOlive = Color(0xFF819451)
-    val DarkOliveDeep = Color(0xFF607238)
-    val DarkOliveSoft = Color(0xFF303A25)
-    val DarkTerra = Color(0xFFD07350)
-    val DarkTerraSoft = Color(0xFF41271E)
-    val DarkAmber = Color(0xFFD8A34A)
-    val DarkAmberSoft = Color(0xFF3C321F)
-    val DarkTeal = Color(0xFF67A29B)
-    val DarkTealSoft = Color(0xFF203B38)
 }
 
 private val LightScheme = lightColorScheme(
@@ -71,36 +53,12 @@ private val LightScheme = lightColorScheme(
     outline = KitchenColors.Line,
 )
 
-private val DarkScheme = darkColorScheme(
-    primary = KitchenColors.DarkOlive,
-    onPrimary = Color(0xFF11140F),
-    primaryContainer = KitchenColors.DarkOliveSoft,
-    onPrimaryContainer = Color(0xFFDDE7C8),
-    secondary = KitchenColors.DarkTeal,
-    onSecondary = Color(0xFF11140F),
-    secondaryContainer = KitchenColors.DarkTealSoft,
-    tertiary = KitchenColors.DarkTerra,
-    error = Color(0xFFE08C8C),
-    background = KitchenColors.DarkCanvas,
-    onBackground = KitchenColors.DarkInk,
-    surface = KitchenColors.DarkSurface,
-    onSurface = KitchenColors.DarkInk,
-    surfaceVariant = KitchenColors.DarkSurfaceSoft,
-    onSurfaceVariant = KitchenColors.DarkInk2,
-    outline = KitchenColors.DarkLine,
-)
-
 private val KitchenTypography = Typography()
 
 @Composable
-fun KitchenTheme(themeMode: String, content: @Composable () -> Unit) {
-    val dark = when (themeMode) {
-        "dark" -> true
-        "light" -> false
-        else -> isSystemInDarkTheme()
-    }
+fun KitchenTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = if (dark) DarkScheme else LightScheme,
+        colorScheme = LightScheme,
         typography = KitchenTypography,
         content = content,
     )

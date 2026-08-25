@@ -248,15 +248,10 @@ fun HeroCopy(
 
 @Composable
 fun BoardArt(modifier: Modifier = Modifier) {
-    val dark = MaterialTheme.colorScheme.background == KitchenColors.DarkCanvas
     Canvas(
         modifier = modifier.background(
             Brush.linearGradient(
-                colors = if (dark) {
-                    listOf(Color(0xFF353A2D), Color(0xFF273425))
-                } else {
-                    listOf(Color(0xFFDAD0BD), Color(0xFFB8B594))
-                }
+                colors = listOf(Color(0xFFDAD0BD), Color(0xFFB8B594))
             )
         )
     ) {

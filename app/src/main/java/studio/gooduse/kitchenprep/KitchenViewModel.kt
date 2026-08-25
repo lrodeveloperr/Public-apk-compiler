@@ -357,9 +357,6 @@ class KitchenViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch { repository.setLanguage(tag) }
     }
 
-    fun setTheme(mode: String) {
-        viewModelScope.launch { repository.setTheme(mode) }
-    }
 
     fun setAlerts(value: Boolean) {
         viewModelScope.launch { repository.setAlerts(value) }

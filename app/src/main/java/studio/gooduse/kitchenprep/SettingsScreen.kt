@@ -22,7 +22,6 @@ fun SettingsScreen(
     consentPrivacyRequired: Boolean,
     tr: Translate,
     onLanguage: (String) -> Unit,
-    onTheme: (String) -> Unit,
     onAlerts: (Boolean) -> Unit,
     onAwake: (Boolean) -> Unit,
     onCompact: (Boolean) -> Unit,
@@ -83,29 +82,6 @@ fun SettingsScreen(
                                     },
                                 )
                             }
-                        }
-                    }
-                },
-            )
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f))
-            SettingRow(
-                title = tr("theme", "Theme"),
-                stacked = profile.width < 600.dp || profile.largeText,
-                trailing = {
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(5.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        listOf(
-                            "system" to tr("system", "System"),
-                            "light" to tr("light", "Light"),
-                            "dark" to tr("dark", "Dark"),
-                        ).forEach { (value, label) ->
-                            FilterChip(
-                                selected = settings.themeMode == value,
-                                onClick = { onTheme(value) },
-                                label = { Text(label, maxLines = 2) },
-                            )
                         }
                     }
                 },

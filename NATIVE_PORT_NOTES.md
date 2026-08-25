@@ -8,6 +8,7 @@ Runtime architecture:
 - Android share text and Paste both become editable native tasks before a board is created.
 - Timers persist deadlines and restore background alerts after process death/reboot; timer expiry requests attention and never marks a task complete.
 - The approved Kitchen Prep Board launcher image is also the native top-bar logo.
+- The app is intentionally light-mode only: Compose, AppCompat and system bars are all locked to the approved light palette.
 - One shared native `BoardArt` component is used everywhere a board visual appears, preventing Home/Boards drift.
 - UMP gates ad requests; subscribers do not initialize the banner. Eligible free users receive a native non-personalized anchored-adaptive banner only after it loads.
 - Google Play Billing remains the only paywall surface and only removes ads; core app features remain available.

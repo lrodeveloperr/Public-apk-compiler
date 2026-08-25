@@ -103,14 +103,8 @@ fun WorkbenchCard(
 
 @Composable
 fun kitchenNavigationSuiteColors(): NavigationSuiteColors {
-    val dark = MaterialTheme.colorScheme.background == KitchenColors.DarkCanvas
-    val navigationBarSurface = if (dark) {
-        MaterialTheme.colorScheme.surfaceVariant
-    } else {
-        MaterialTheme.colorScheme.surface
-    }
     return NavigationSuiteDefaults.colors(
-        navigationBarContainerColor = navigationBarSurface,
+        navigationBarContainerColor = MaterialTheme.colorScheme.surface,
         navigationBarContentColor = MaterialTheme.colorScheme.onSurface,
         navigationRailContainerColor = MaterialTheme.colorScheme.surface,
         navigationRailContentColor = MaterialTheme.colorScheme.onSurface,
@@ -119,12 +113,7 @@ fun kitchenNavigationSuiteColors(): NavigationSuiteColors {
 
 @Composable
 fun kitchenNavigationSuiteItemColors(): NavigationSuiteItemColors {
-    val dark = MaterialTheme.colorScheme.background == KitchenColors.DarkCanvas
-    val selectedContent = if (dark) {
-        MaterialTheme.colorScheme.onSurface
-    } else {
-        MaterialTheme.colorScheme.primary
-    }
+    val selectedContent = MaterialTheme.colorScheme.primary
     val unselectedContent = MaterialTheme.colorScheme.onSurfaceVariant
     val indicator = MaterialTheme.colorScheme.primaryContainer
 
@@ -179,16 +168,11 @@ fun DividerInCard() {
 
 @Composable
 fun laneColors(lane: LiveLane): Pair<Color, Color> {
-    val dark = MaterialTheme.colorScheme.background == KitchenColors.DarkCanvas
     return when (lane) {
-        LiveLane.NOW -> if (dark) Color(0xFF303A25) to Color(0xFFD8E6B4)
-        else KitchenColors.OliveSoft to KitchenColors.OliveDeep
-        LiveLane.WAITING -> if (dark) Color(0xFF3C321F) to Color(0xFFF4D28F)
-        else KitchenColors.AmberSoft to Color(0xFF80560E)
-        LiveLane.NEXT -> if (dark) Color(0xFF203B38) to Color(0xFFB9E0DA)
-        else KitchenColors.TealSoft to Color(0xFF2F5A56)
-        LiveLane.DONE -> if (dark) Color(0xFF292E27) to Color(0xFFD5D7CF)
-        else Color(0xFFECE9E2) to Color(0xFF595C54)
+        LiveLane.NOW -> KitchenColors.OliveSoft to KitchenColors.OliveDeep
+        LiveLane.WAITING -> KitchenColors.AmberSoft to Color(0xFF80560E)
+        LiveLane.NEXT -> KitchenColors.TealSoft to Color(0xFF2F5A56)
+        LiveLane.DONE -> Color(0xFFECE9E2) to Color(0xFF595C54)
     }
 }
 
