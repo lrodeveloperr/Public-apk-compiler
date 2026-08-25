@@ -307,7 +307,9 @@ fun TasksStep(
             profile = profile,
             tr = tr,
             onDelete = { onDeleteTask(task.id) },
-            onChange = { transform -> onUpdateTask(task.id, transform) },
+            onChange = { transform ->
+                onUpdateTask(task.id) { current -> current.transform() }
+            },
         )
     }
 }
@@ -318,7 +320,7 @@ fun TaskEditorCard(
     profile: KitchenWindowProfile,
     tr: Translate,
     onDelete: () -> Unit,
-    onChange: ((TaskInput) -> TaskInput) -> Unit,
+    onChange: (TaskInput.() -> TaskInput) -> Unit,
 ) {
     WorkbenchCard {
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -370,14 +372,14 @@ fun TaskEditorCard(
                     )
                 }
             } else {
-                QuantityField(task.have, tr("have", "Have"), Modifier.fillMaxWidth()) {
-                    value -> onChange { copy(have = value) }
+                QuantityField(task.have, tr("have", "Have"), Modifier.fillMaxWidth()) { value ->
+                    onChange { copy(have = value) }
                 }
-                QuantityField(task.need, tr("need", "Need"), Modifier.fillMaxWidth()) {
-                    value -> onChange { copy(need = value) }
+                QuantityField(task.need, tr("need", "Need"), Modifier.fillMaxWidth()) { value ->
+                    onChange { copy(need = value) }
                 }
-                QuantityField(task.prep, tr("prep", "Prep"), Modifier.fillMaxWidth()) {
-                    value -> onChange { copy(prep = value) }
+                QuantityField(task.prep, tr("prep", "Prep"), Modifier.fillMaxWidth()) { value ->
+                    onChange { copy(prep = value) }
                 }
             }
 
