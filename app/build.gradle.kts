@@ -59,9 +59,15 @@ val generatedRes = layout.buildDirectory.dir("generated/kpbRes")
 
 val generateKitchenNativeInputs by tasks.registering {
     val htmlParts = rootProject.fileTree("compiler-input") { include("html.part*") }
-    val iconSource = rootProject.file("compiler-input/icons/icon-mdpi.b64")
+    val iconSources = mapOf(
+        "mdpi" to rootProject.file("compiler-input/icons/icon-mdpi.b64"),
+        "hdpi" to rootProject.file("compiler-input/icons/icon-hdpi.b64"),
+        "xhdpi" to rootProject.file("compiler-input/icons/icon-xhdpi.b64"),
+        "xxhdpi" to rootProject.file("compiler-input/icons/icon-xxhdpi.b64"),
+        "xxxhdpi" to rootProject.file("compiler-input/icons/icon-xxxhdpi.b64"),
+    )
     inputs.files(htmlParts)
-    inputs.file(iconSource)
+    inputs.files(iconSources.values)
     outputs.dir(generatedAssets)
     outputs.dir(generatedRes)
 
@@ -104,14 +110,16 @@ val generateKitchenNativeInputs by tasks.registering {
         check(jsonEnd > jsonStart) { "I18N dictionary terminator not found" }
         assetsDir.resolve("i18n.json").writeText(html.substring(jsonStart, jsonEnd).trim())
 
-        val clean = iconSource.readText().replace(Regex("[^A-Za-z0-9+/=]"), "")
-        val png = Base64.getDecoder().decode(clean)
-        check(png.size > 8 && png.copyOfRange(0, 8).contentEquals(
-            byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A)
-        )) { "launcher icon source is not a PNG" }
-        val mipmap = resDir.resolve("mipmap-mdpi").apply { mkdirs() }
-        mipmap.resolve("ic_launcher.png").writeBytes(png)
-        mipmap.resolve("ic_launcher_round.png").writeBytes(png)
+        iconSources.forEach { (density, iconSource) ->
+            val clean = iconSource.readText().replace(Regex("[^A-Za-z0-9+/=]"), "")
+            val png = Base64.getDecoder().decode(clean)
+            check(png.size > 8 && png.copyOfRange(0, 8).contentEquals(
+                byteArrayOf(0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A)
+            )) { "launcher icon source for $density is not a PNG" }
+            val mipmap = resDir.resolve("mipmap-$density").apply { mkdirs() }
+            mipmap.resolve("ic_launcher.png").writeBytes(png)
+            mipmap.resolve("ic_launcher_round.png").writeBytes(png)
+        }
     }
 }
 
