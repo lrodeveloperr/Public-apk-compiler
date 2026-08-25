@@ -21,20 +21,12 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up current Android SDK tools
+      - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-        with:
-          cmdline-tools-version: 15859902
 
-      - name: Install Android 17 compile SDK
+      - name: Install Android 16 compile SDK
         shell: bash
-        run: |
-          set -euo pipefail
-          ANDROID_CLI="$ANDROID_SDK_ROOT/cmdline-tools/15859902/bin/android"
-          "$ANDROID_CLI" --sdk="$ANDROID_SDK_ROOT" sdk install --canary \
-            platforms/android-37 \
-            build-tools/36.0.0 \
-            platform-tools
+        run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: Set up Gradle 9.5
         uses: gradle/actions/setup-gradle@v4
