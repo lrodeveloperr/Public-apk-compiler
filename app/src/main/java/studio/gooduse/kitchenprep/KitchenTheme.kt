@@ -116,6 +116,7 @@ data class KitchenWindowProfile(
     val heroSideBySide: Boolean,
     val wideLive: Boolean,
     val compactHeight: Boolean,
+    val largeText: Boolean,
     val topBarHeight: Dp,
     val heroHeight: Dp,
     val heroTitleSize: TextUnit,
@@ -123,9 +124,12 @@ data class KitchenWindowProfile(
     val touchTarget: Dp,
 )
 
-fun kitchenWindowProfile(width: Dp, height: Dp): KitchenWindowProfile {
+fun kitchenWindowProfile(width: Dp, height: Dp, fontScale: Float = 1f): KitchenWindowProfile {
     val compactHeight = height < 480.dp
-    val useRail = width >= 840.dp && !compactHeight
+    val largeText = fontScale >= 1.30f
+    // Accessibility reflow wins over width. A large-font tablet should not squeeze
+    // four lanes or a navigation rail merely because it has expanded width.
+    val useRail = width >= 840.dp && !compactHeight && !largeText
     val gutter = when {
         width < 360.dp -> 12.dp
         width < 600.dp -> 16.dp
@@ -134,10 +138,7 @@ fun kitchenWindowProfile(width: Dp, height: Dp): KitchenWindowProfile {
         width < 1600.dp -> 40.dp
         else -> 48.dp
     }
-    val maxWidth = when {
-        width >= 1200.dp -> 1440.dp
-        else -> 0.dp
-    }
+    val maxWidth = if (width >= 1200.dp) 1440.dp else 0.dp
     val heroTitle = when {
         compactHeight && width < 840.dp -> 29.sp
         width >= 1200.dp && !compactHeight -> 52.sp
@@ -158,9 +159,10 @@ fun kitchenWindowProfile(width: Dp, height: Dp): KitchenWindowProfile {
         contentMaxWidth = maxWidth,
         useRail = useRail,
         homeTwoPane = useRail,
-        heroSideBySide = width >= 600.dp,
+        heroSideBySide = width >= 600.dp && !largeText,
         wideLive = useRail,
         compactHeight = compactHeight,
+        largeText = largeText,
         topBarHeight = if (compactHeight) 56.dp else 64.dp,
         heroHeight = heroHeight,
         heroTitleSize = heroTitle,
