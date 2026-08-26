@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package studio.gooduse.kitchenprep
 
 import androidx.compose.foundation.BorderStroke
