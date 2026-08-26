@@ -1,17 +1,26 @@
 package studio.gooduse.kitchenprep
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.text.font.*
-import androidx.compose.ui.unit.*
-import studio.gooduse.kitchenprep.data.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import studio.gooduse.kitchenprep.data.BoardEntity
 
 @Composable
 fun BoardsScreen(
@@ -21,130 +30,164 @@ fun BoardsScreen(
     onNew: () -> Unit,
     onOpen: (String) -> Unit,
 ) {
-    var filter by remember { mutableStateOf("UPCOMING") }
+    var filter by remember { mutableStateOf("ALL") }
     val visible = remember(boards, filter) {
-        if (filter == "UPCOMING") boards.filter { it.status != "COMPLETED" } else boards
+        when (filter) {
+            "ACTIVE" -> boards.filter { it.status == "ACTIVE" }
+            "PAUSED" -> boards.filter { it.status == "PAUSED" }
+            "DONE" -> boards.filter { it.status == "COMPLETED" }
+            else -> boards
+        }
     }
+
     Column(
         modifier = centeredContentModifier(profile)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = profile.gutter, vertical = 18.dp)
+            .padding(horizontal = profile.gutter, vertical = if (profile.compactHeight) 12.dp else 18.dp)
             .padding(bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            PageTitle(tr("boards", "Boards"), profile, Modifier.weight(1f))
-            OutlinedButton(onClick = onNew, modifier = Modifier.heightIn(min = 52.dp)) {
-                Icon(Icons.Default.Add, contentDescription = null)
-                Spacer(Modifier.width(4.dp))
-                Text(tr("new", "New"), maxLines = 2)
+        if (profile.width < 420.dp || profile.largeText) {
+            PageTitle(tr("boards", "Boards"), profile)
+            NewBoardTopButton(tr, onNew, Modifier.fillMaxWidth())
+        } else {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                PageTitle(tr("boards", "Boards"), profile, Modifier.weight(1f))
+                NewBoardTopButton(tr, onNew, Modifier.widthIn(min = 180.dp))
             }
         }
-        Spacer(Modifier.height(12.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilterChip(
-                selected = filter == "UPCOMING",
-                onClick = { filter = "UPCOMING" },
-                label = { Text(tr("upcoming", "Upcoming"), maxLines = 2) },
-                modifier = Modifier.weight(1f),
-            )
-            FilterChip(
-                selected = filter == "ALL",
-                onClick = { filter = "ALL" },
-                label = { Text(tr("all", "All"), maxLines = 2) },
-                modifier = Modifier.weight(1f),
-            )
-        }
-        Spacer(Modifier.height(15.dp))
 
-        val featured = visible.firstOrNull()
-        if (featured != null) {
-            FeatureBoard(featured, tr) { onOpen(featured.id) }
-            Spacer(Modifier.height(16.dp))
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            BoardFilterChip("ALL", tr("all", "All"), filter) { filter = "ALL" }
+            BoardFilterChip("ACTIVE", tr("active", "Active"), filter) { filter = "ACTIVE" }
+            BoardFilterChip("PAUSED", tr("pause", "Paused"), filter) { filter = "PAUSED" }
+            BoardFilterChip("DONE", tr("done", "Done"), filter) { filter = "DONE" }
         }
 
-        WorkbenchCard {
-            if (visible.isEmpty()) {
-                Text(
-                    tr("boardsStay", "Boards stay on this device"),
-                    modifier = Modifier.padding(18.dp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            } else {
-                visible.forEachIndexed { index, board ->
-                    BoardListRow(board, tr) { onOpen(board.id) }
-                    if (index != visible.lastIndex) {
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f))
+        if (visible.isEmpty()) {
+            WorkbenchCard(Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Text("—", fontSize = 24.sp, fontWeight = FontWeight.Black)
+                    OutlinedButton(
+                        onClick = onNew,
+                        modifier = Modifier.heightIn(min = 48.dp),
+                        shape = RoundedCornerShape(14.dp),
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = null)
+                        Spacer(Modifier.width(5.dp))
+                        Text(tr("new", "New"), fontWeight = FontWeight.Bold)
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun FeatureBoard(board: BoardEntity, tr: Translate, onOpen: () -> Unit) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
-        color = KitchenColors.OliveDeep,
-        contentColor = Color.White,
-        shadowElevation = 0.dp,
-    ) {
-        Column {
-            Column(Modifier.padding(16.dp)) {
-                Text(board.name, fontSize = 19.sp, fontWeight = FontWeight.Black)
-                Text(
-                    board.area,
-                    fontSize = 12.sp,
-                    color = Color(0xFFCFD3C9),
-                )
-                Spacer(Modifier.height(12.dp))
-                OutlinedButton(
-                    onClick = onOpen,
-                    modifier = Modifier.heightIn(min = 48.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
-                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.35f)),
+        } else if (profile.width >= 840.dp && !profile.largeText) {
+            visible.chunked(2).forEach { pair ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                    verticalAlignment = Alignment.Top,
                 ) {
-                    Text(tr("open", "Open"), fontWeight = FontWeight.Black, maxLines = 2)
+                    pair.forEach { board ->
+                        FrozenBoardCard(
+                            board = board,
+                            tr = tr,
+                            onClick = { onOpen(board.id) },
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                    if (pair.size == 1) Spacer(Modifier.weight(1f))
                 }
+            }
+        } else {
+            visible.forEach { board ->
+                FrozenBoardCard(
+                    board = board,
+                    tr = tr,
+                    onClick = { onOpen(board.id) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
         }
     }
 }
 
 @Composable
-fun BoardListRow(board: BoardEntity, tr: Translate, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
+private fun NewBoardTopButton(tr: Translate, onNew: () -> Unit, modifier: Modifier) {
+    OutlinedButton(
+        onClick = onNew,
+        modifier = modifier.heightIn(min = 54.dp),
+        shape = RoundedCornerShape(16.dp),
     ) {
-        Surface(
-            modifier = Modifier.size(48.dp),
-            shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant,
+        Icon(Icons.Default.Add, contentDescription = null)
+        Spacer(Modifier.width(6.dp))
+        Text(tr("new", "New"), fontWeight = FontWeight.Black)
+    }
+}
+
+@Composable
+private fun BoardFilterChip(
+    key: String,
+    label: String,
+    selected: String,
+    onClick: () -> Unit,
+) {
+    FilterChip(
+        selected = selected == key,
+        onClick = onClick,
+        label = { Text(label, maxLines = 2) },
+        modifier = Modifier.heightIn(min = 48.dp),
+    )
+}
+
+@Composable
+private fun FrozenBoardCard(
+    board: BoardEntity,
+    tr: Translate,
+    onClick: () -> Unit,
+    modifier: Modifier,
+) {
+    WorkbenchCard(modifier) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .padding(horizontal = 18.dp, vertical = 18.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            BoardArt(Modifier.fillMaxSize())
-        }
-        Spacer(Modifier.width(12.dp))
-        Column(Modifier.weight(1f)) {
-            Text(board.name, fontSize = 14.sp, fontWeight = FontWeight.Black, maxLines = 2)
-            Text(
-                board.area,
-                fontSize = 11.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2,
+            Column(Modifier.weight(1f)) {
+                Text(
+                    board.name,
+                    fontSize = 20.sp,
+                    lineHeight = 24.sp,
+                    fontWeight = FontWeight.Black,
+                    maxLines = 2,
+                )
+                if (board.area.isNotBlank()) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        board.area,
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                    )
+                }
+            }
+
+            StatusBadge(
+                text = when (board.status) {
+                    "COMPLETED" -> tr("done", "Done")
+                    "PAUSED" -> tr("pause", "Paused")
+                    else -> tr("active", "Active")
+                },
             )
+            Icon(Icons.Default.ChevronRight, contentDescription = null)
         }
-        StatusBadge(
-            text = when (board.status) {
-                "COMPLETED" -> tr("done", "Done")
-                "PAUSED" -> tr("pause", "Pause")
-                else -> tr("active", "Active")
-            },
-        )
     }
 }

@@ -2,8 +2,8 @@
 
 package studio.gooduse.kitchenprep
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,196 +43,138 @@ fun OnboardingScreen(
         modifier = Modifier
             .fillMaxSize()
             .safeDrawingPadding(),
+        contentAlignment = Alignment.Center,
     ) {
         val isLandscape = maxWidth > maxHeight
         val isTablet = maxWidth >= 700.dp && maxHeight >= 700.dp
+        val horizontalPadding = when {
+            isTablet -> 48.dp
+            isLandscape -> 32.dp
+            else -> 20.dp
+        }
+        val maxContentWidth = if (isLandscape) 760.dp else 720.dp
 
-        if (isLandscape) {
-            Row(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = horizontalPadding, vertical = if (isLandscape) 16.dp else 22.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            BrandRow(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = if (isTablet) 56.dp else 24.dp, vertical = 18.dp),
-                horizontalArrangement = Arrangement.spacedBy(if (isTablet) 40.dp else 24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                OnboardingCopy(
-                    modifier = Modifier.weight(0.92f),
-                    accepted = accepted,
-                    tr = tr,
-                    isTablet = isTablet,
-                    onAcceptedChange = { accepted = it },
-                    onTerms = onTerms,
-                    onSafety = onSafety,
-                    onPrivacy = onPrivacy,
-                    onComplete = onComplete,
-                )
-                Image(
-                    painter = painterResource(R.drawable.onboarding_hero_landscape),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .weight(1.08f)
-                        .fillMaxHeight()
-                        .clip(RoundedCornerShape(if (isTablet) 28.dp else 22.dp)),
-                    contentScale = ContentScale.Crop,
-                )
-            }
-        } else {
+                    .fillMaxWidth()
+                    .widthIn(max = maxContentWidth),
+                isTablet = isTablet,
+            )
+
+            Spacer(Modifier.height(if (isLandscape) 34.dp else if (isTablet) 88.dp else 70.dp))
+
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = if (isTablet) 48.dp else 20.dp, vertical = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .fillMaxWidth()
+                    .widthIn(max = maxContentWidth),
+                horizontalAlignment = if (isLandscape) Alignment.Start else Alignment.CenterHorizontally,
             ) {
-                BrandRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .widthIn(max = 820.dp),
-                    isTablet = isTablet,
+                Text(
+                    text = tr("onboardingTitle", "Kitchen prep, organized."),
+                    fontSize = when {
+                        isTablet -> 44.sp
+                        isLandscape -> 38.sp
+                        else -> 36.sp
+                    },
+                    lineHeight = when {
+                        isTablet -> 48.sp
+                        isLandscape -> 42.sp
+                        else -> 40.sp
+                    },
+                    fontWeight = FontWeight.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = if (isLandscape) TextAlign.Start else TextAlign.Center,
+                    maxLines = 3,
                 )
-                Spacer(Modifier.height(if (isTablet) 28.dp else 18.dp))
-                Image(
-                    painter = painterResource(R.drawable.onboarding_hero_portrait),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .widthIn(max = if (isTablet) 760.dp else 620.dp)
-                        .heightIn(min = if (isTablet) 330.dp else 250.dp, max = if (isTablet) 470.dp else 390.dp)
-                        .clip(RoundedCornerShape(if (isTablet) 28.dp else 24.dp)),
-                    contentScale = ContentScale.Crop,
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = tr("onboardingTagline", "Prep with purpose."),
+                    fontSize = if (isTablet) 17.sp else 15.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = if (isLandscape) TextAlign.Start else TextAlign.Center,
+                    maxLines = 2,
                 )
-                Spacer(Modifier.height(if (isTablet) 28.dp else 22.dp))
-                OnboardingCopy(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .widthIn(max = 760.dp),
-                    accepted = accepted,
-                    tr = tr,
-                    isTablet = isTablet,
-                    onAcceptedChange = { accepted = it },
-                    onTerms = onTerms,
-                    onSafety = onSafety,
-                    onPrivacy = onPrivacy,
-                    onComplete = onComplete,
-                    showBrand = false,
-                )
-                Spacer(Modifier.height(20.dp))
-            }
-        }
-    }
-}
 
-@Composable
-private fun OnboardingCopy(
-    modifier: Modifier,
-    accepted: Boolean,
-    tr: Translate,
-    isTablet: Boolean,
-    onAcceptedChange: (Boolean) -> Unit,
-    onTerms: () -> Unit,
-    onSafety: () -> Unit,
-    onPrivacy: () -> Unit,
-    onComplete: () -> Unit,
-    showBrand: Boolean = true,
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = if (showBrand) Alignment.Start else Alignment.CenterHorizontally,
-    ) {
-        if (showBrand) {
-            BrandRow(modifier = Modifier.fillMaxWidth(), isTablet = isTablet)
-            Spacer(Modifier.height(if (isTablet) 42.dp else 24.dp))
-        }
+                Spacer(Modifier.height(if (isTablet) 32.dp else 24.dp))
 
-        Text(
-            text = tr("onboardingTitle", "Kitchen prep, organized."),
-            fontSize = if (isTablet) 46.sp else 38.sp,
-            lineHeight = if (isTablet) 50.sp else 42.sp,
-            fontWeight = FontWeight.Black,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = if (showBrand) TextAlign.Start else TextAlign.Center,
-            maxLines = 3,
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            text = tr("onboardingTagline", "Prep with purpose."),
-            fontSize = if (isTablet) 18.sp else 16.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = if (showBrand) TextAlign.Start else TextAlign.Center,
-            maxLines = 2,
-        )
-        Spacer(Modifier.height(if (isTablet) 28.dp else 20.dp))
-
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(18.dp),
-            color = MaterialTheme.colorScheme.surface,
-            border = androidx.compose.foundation.BorderStroke(
-                1.dp,
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.55f),
-            ),
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.Top,
-            ) {
-                Checkbox(
-                    checked = accepted,
-                    onCheckedChange = onAcceptedChange,
-                    modifier = Modifier.size(48.dp),
-                )
-                Spacer(Modifier.width(8.dp))
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(top = 4.dp),
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(18.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.50f)),
                 ) {
-                    Text(
-                        tr("onboardingAccept", "I accept and acknowledge"),
-                        fontSize = 14.sp,
-                        lineHeight = 18.sp,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(2.dp),
-                        verticalArrangement = Arrangement.spacedBy(0.dp),
+                    Row(
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        CompactLegalLink(tr("terms", "Terms of Use"), onTerms)
-                        Text("·", modifier = Modifier.padding(top = 7.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        CompactLegalLink(tr("safety", "Safety Notice"), onSafety)
-                        Text("·", modifier = Modifier.padding(top = 7.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        CompactLegalLink(tr("privacy", "Privacy Policy"), onPrivacy)
+                        Checkbox(
+                            checked = accepted,
+                            onCheckedChange = { accepted = it },
+                            modifier = Modifier.size(48.dp),
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(0.dp),
+                        ) {
+                            Text(
+                                text = tr("onboardingAccept", "I accept and acknowledge"),
+                                fontSize = 14.sp,
+                                lineHeight = 18.sp,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 2,
+                            )
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                verticalArrangement = Arrangement.spacedBy(0.dp),
+                            ) {
+                                CompactLegalLink(tr("terms", "Terms"), onTerms)
+                                Text("·", modifier = Modifier.padding(top = 7.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                CompactLegalLink(tr("safety", "Safety"), onSafety)
+                                Text("·", modifier = Modifier.padding(top = 7.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                CompactLegalLink(tr("privacy", "Privacy"), onPrivacy)
+                            }
+                        }
                     }
                 }
-            }
-        }
 
-        Spacer(Modifier.height(14.dp))
-        Button(
-            onClick = onComplete,
-            enabled = accepted,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 58.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Text(
-                tr("getStarted", "Get Started"),
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Black,
-                maxLines = 2,
-            )
+                Spacer(Modifier.height(18.dp))
+                Button(
+                    onClick = onComplete,
+                    enabled = accepted,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 58.dp),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Text(
+                        tr("getStarted", "Get Started"),
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Black,
+                        maxLines = 2,
+                    )
+                }
+
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    text = tr("boardsStay", "Data stays on this device."),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
         }
-        Spacer(Modifier.height(12.dp))
-        Text(
-            text = tr("boardsStay", "Data stays on this device."),
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 2,
-        )
     }
 }
 
@@ -264,7 +206,7 @@ private fun BrandRow(modifier: Modifier = Modifier, isTablet: Boolean) {
 private fun CompactLegalLink(text: String, onClick: () -> Unit) {
     TextButton(
         onClick = onClick,
-        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp),
+        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp),
         modifier = Modifier.heightIn(min = 32.dp),
     ) {
         Text(text, fontSize = 13.sp, fontWeight = FontWeight.Bold, maxLines = 2)

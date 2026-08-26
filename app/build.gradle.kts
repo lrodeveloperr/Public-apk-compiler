@@ -59,7 +59,6 @@ val generatedRes = layout.buildDirectory.dir("generated/kpbRes")
 
 val generateKitchenNativeInputs by tasks.registering {
     val htmlParts = rootProject.fileTree("compiler-input") { include("html.part*") }
-    val onboardingHeroParts = rootProject.fileTree("compiler-input") { include("onboarding-hero.part*.b64") }
     val iconSources = mapOf(
         "mdpi" to rootProject.file("compiler-input/icons/icon-mdpi.b64"),
         "hdpi" to rootProject.file("compiler-input/icons/icon-hdpi.b64"),
@@ -68,7 +67,6 @@ val generateKitchenNativeInputs by tasks.registering {
         "xxxhdpi" to rootProject.file("compiler-input/icons/icon-xxxhdpi.b64"),
     )
     inputs.files(htmlParts)
-    inputs.files(onboardingHeroParts)
     inputs.files(iconSources.values)
     outputs.dir(generatedAssets)
     outputs.dir(generatedRes)
@@ -121,19 +119,6 @@ val generateKitchenNativeInputs by tasks.registering {
             val mipmap = resDir.resolve("mipmap-$density").apply { mkdirs() }
             mipmap.resolve("ic_launcher.png").writeBytes(png)
             mipmap.resolve("ic_launcher_round.png").writeBytes(png)
-        }
-
-        val heroFiles = onboardingHeroParts.files.sortedBy { it.name }
-        if (heroFiles.isNotEmpty()) {
-            val clean = heroFiles.joinToString(separator = "") { it.readText() }
-                .replace(Regex("[^A-Za-z0-9+/=]"), "")
-            val jpg = Base64.getDecoder().decode(clean)
-            check(jpg.size > 3 && jpg[0] == 0xFF.toByte() && jpg[1] == 0xD8.toByte() && jpg[2] == 0xFF.toByte()) {
-                "onboarding hero source is not a JPEG"
-            }
-            val drawable = resDir.resolve("drawable-nodpi").apply { mkdirs() }
-            drawable.resolve("onboarding_hero_portrait.jpg").writeBytes(jpg)
-            drawable.resolve("onboarding_hero_landscape.jpg").writeBytes(jpg)
         }
     }
 }
