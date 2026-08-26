@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         consentController = ConsentController(this)
 
         setContent {
-            KitchenPrepClosedTestApp(
+            KitchenAppRoot(
                 activity = this,
                 billingController = billingController,
                 consentController = consentController,
