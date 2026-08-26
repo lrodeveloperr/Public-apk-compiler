@@ -161,8 +161,8 @@ fun LiveScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(14.dp),
-                shape = RoundedCornerShape(15.dp),
-                color = Color(0xFF22271F),
+                shape = RoundedCornerShape(8.dp),
+                color = KitchenColors.OliveDeep,
                 contentColor = Color.White,
                 shadowElevation = 12.dp,
             ) {
@@ -192,9 +192,9 @@ fun LiveHeader(
     onPause: (Boolean) -> Unit,
 ) {
     Surface(
-        color = Color(0xFF222720),
+        color = KitchenColors.OliveDeep,
         contentColor = Color.White,
-        shadowElevation = 5.dp,
+        shadowElevation = 0.dp,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
@@ -228,10 +228,10 @@ fun LiveHeader(
 fun WaitingAlert(count: Int, tr: Translate, onClick: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp),
-        shape = RoundedCornerShape(19.dp),
-        color = KitchenColors.Terra,
-        contentColor = Color.White,
-        shadowElevation = 6.dp,
+        shape = RoundedCornerShape(8.dp),
+        color = KitchenColors.AmberSoft,
+        contentColor = KitchenColors.Amber,
+        shadowElevation = 0.dp,
     ) {
         Row(
             modifier = Modifier.padding(14.dp),
@@ -246,8 +246,8 @@ fun WaitingAlert(count: Int, tr: Translate, onClick: () -> Unit) {
             OutlinedButton(
                 onClick = onClick,
                 modifier = Modifier.heightIn(min = 48.dp),
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.38f)),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                border = BorderStroke(1.dp, KitchenColors.Amber.copy(alpha = 0.38f)),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = KitchenColors.Amber),
             ) {
                 Text(tr("review", "Review"), fontWeight = FontWeight.Black)
             }
@@ -264,10 +264,10 @@ fun LiveLaneTabs(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
-        shape = RoundedCornerShape(17.dp),
+        shape = RoundedCornerShape(8.dp),
         color = MaterialTheme.colorScheme.background.copy(alpha = 0.97f),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
-        shadowElevation = 3.dp,
+        shadowElevation = 0.dp,
     ) {
         Row(Modifier.padding(5.dp), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
             LiveLane.entries.forEach { lane ->
@@ -275,7 +275,7 @@ fun LiveLaneTabs(
                 val (bg, fg) = laneColors(lane)
                 Surface(
                     modifier = Modifier.weight(1f).heightIn(min = 48.dp).clickable { onLane(lane) },
-                    shape = RoundedCornerShape(13.dp),
+                    shape = RoundedCornerShape(7.dp),
                     color = if (selected == lane) bg else Color.Transparent,
                     contentColor = if (selected == lane) fg else MaterialTheme.colorScheme.onSurfaceVariant,
                 ) {
@@ -494,10 +494,10 @@ fun TimerChip(
             .heightIn(min = 48.dp)
             .widthIn(max = 152.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(10.dp),
+        shape = RoundedCornerShape(8.dp),
         color = background,
         contentColor = foreground,
-        shadowElevation = 2.dp,
+        shadowElevation = 0.dp,
     ) {
         Box(
             modifier = Modifier.padding(horizontal = 9.dp, vertical = 7.dp),
@@ -525,7 +525,7 @@ fun SmallActionButton(
             )
         } else ButtonDefaults.buttonColors(),
         contentPadding = PaddingValues(horizontal = 10.dp),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(8.dp),
     ) {
         Text(label, fontSize = 11.sp, fontWeight = FontWeight.Black, maxLines = 2)
     }

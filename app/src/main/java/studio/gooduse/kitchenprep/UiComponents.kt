@@ -87,8 +87,8 @@ fun PageTitle(
 @Composable
 fun WorkbenchCard(
     modifier: Modifier = Modifier,
-    shape: RoundedCornerShape = RoundedCornerShape(20.dp),
-    borderColor: Color = MaterialTheme.colorScheme.outline.copy(alpha = 0.55f),
+    shape: RoundedCornerShape = RoundedCornerShape(8.dp),
+    borderColor: Color = MaterialTheme.colorScheme.outline,
     content: @Composable () -> Unit,
 ) {
     Surface(
@@ -96,7 +96,7 @@ fun WorkbenchCard(
         shape = shape,
         color = MaterialTheme.colorScheme.surface,
         border = BorderStroke(1.dp, borderColor),
-        shadowElevation = 4.dp,
+        shadowElevation = 0.dp,
         content = content,
     )
 }
@@ -146,7 +146,7 @@ fun PrimaryButton(
     Button(
         onClick = onClick,
         modifier = modifier.heightIn(min = minHeight),
-        shape = RoundedCornerShape(17.dp),
+        shape = RoundedCornerShape(8.dp),
     ) {
         if (icon != null) {
             Icon(icon, contentDescription = null)

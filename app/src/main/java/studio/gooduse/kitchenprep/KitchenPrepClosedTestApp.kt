@@ -248,6 +248,16 @@ fun KitchenPrepClosedTestApp(
                                         onPaste = viewModel::openPaste,
                                         onAll = { viewModel.navigate(AppScreen.BOARDS) },
                                         onOpenBoard = { viewModel.openLive(it) },
+                                        onPauseBoard = viewModel::setBoardPaused,
+                                        onToggleTimer = { task ->
+                                            if (!task.timerRunning && settings.alerts) {
+                                                activity.ensureNotificationPermission()
+                                            }
+                                            viewModel.toggleTimer(task)
+                                        },
+                                        onDone = { viewModel.moveTask(it, LiveLane.DONE) },
+                                        onCheck = viewModel::checkWaiting,
+                                        onNow = { viewModel.moveTask(it, LiveLane.NOW) },
                                     )
 
                                     AppScreen.CREATE -> CreateScreen(
@@ -378,9 +388,9 @@ fun KitchenPrepClosedTestApp(
 @Composable
 private fun KitchenTopBar(profile: KitchenWindowProfile) {
     Surface(
-        color = MaterialTheme.colorScheme.background.copy(alpha = 0.97f),
+        color = MaterialTheme.colorScheme.surface,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.35f)),
-        shadowElevation = 3.dp,
+        shadowElevation = 0.dp,
     ) {
         Row(
             modifier = Modifier
@@ -399,7 +409,7 @@ private fun KitchenTopBar(profile: KitchenWindowProfile) {
                 contentDescription = null,
                 modifier = Modifier
                     .size(if (profile.compactHeight) 36.dp else 40.dp)
-                    .clip(RoundedCornerShape(14.dp)),
+                    .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop,
             )
             Spacer(Modifier.width(11.dp))

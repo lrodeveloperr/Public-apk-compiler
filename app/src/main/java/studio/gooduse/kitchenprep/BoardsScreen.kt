@@ -86,13 +86,12 @@ fun BoardsScreen(
 fun FeatureBoard(board: BoardEntity, tr: Translate, onOpen: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(26.dp),
-        color = Color(0xFF252A21),
+        shape = RoundedCornerShape(8.dp),
+        color = KitchenColors.OliveDeep,
         contentColor = Color.White,
-        shadowElevation = 8.dp,
+        shadowElevation = 0.dp,
     ) {
         Column {
-            BoardArt(Modifier.fillMaxWidth().height(126.dp))
             Column(Modifier.padding(16.dp)) {
                 Text(board.name, fontSize = 19.sp, fontWeight = FontWeight.Black)
                 Text(
@@ -125,7 +124,7 @@ fun BoardListRow(board: BoardEntity, tr: Translate, onClick: () -> Unit) {
     ) {
         Surface(
             modifier = Modifier.size(48.dp),
-            shape = RoundedCornerShape(14.dp),
+            shape = RoundedCornerShape(8.dp),
             color = MaterialTheme.colorScheme.surfaceVariant,
         ) {
             BoardArt(Modifier.fillMaxSize())

@@ -1,21 +1,31 @@
+
 package studio.gooduse.kitchenprep
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.draw.*
-import androidx.compose.ui.geometry.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.font.*
-import androidx.compose.ui.unit.*
-import studio.gooduse.kitchenprep.data.*
-import java.util.Locale
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import studio.gooduse.kitchenprep.data.BoardEntity
+import studio.gooduse.kitchenprep.data.TaskEntity
+import java.util.Calendar
+import kotlin.math.max
 
 @Composable
 fun HomeScreen(
@@ -31,417 +41,591 @@ fun HomeScreen(
     onPaste: () -> Unit,
     onAll: () -> Unit,
     onOpenBoard: (String) -> Unit,
+    onPauseBoard: (Boolean) -> Unit,
+    onToggleTimer: (TaskEntity) -> Unit,
+    onDone: (TaskEntity) -> Unit,
+    onCheck: (TaskEntity) -> Unit,
+    onNow: (TaskEntity) -> Unit,
 ) {
-    val contentModifier = centeredContentModifier(profile)
+    val pageModifier = centeredContentModifier(profile)
+        .fillMaxSize()
         .verticalScroll(rememberScrollState())
-        .padding(horizontal = profile.gutter, vertical = if (profile.compactHeight) 12.dp else 20.dp)
+        .padding(horizontal = profile.gutter, vertical = if (profile.compactHeight) 12.dp else 18.dp)
         .padding(bottom = 24.dp)
 
-    if (profile.homeTwoPane) {
-        Row(
-            modifier = contentModifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
-            verticalAlignment = Alignment.Top,
-        ) {
-            Column(
-                modifier = Modifier.weight(1.15f),
-                verticalArrangement = Arrangement.spacedBy(18.dp),
+    if (selectedBoard == null) {
+        EmptyStation(boards, profile, tr, onNew, onPaste, onAll, onOpenBoard, pageModifier)
+        return
+    }
+
+    var nowMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    LaunchedEffect(selectedBoard.id) {
+        while (true) {
+            nowMillis = System.currentTimeMillis()
+            delay(1_000L)
+        }
+    }
+
+    val activeTask = tasks.firstOrNull { it.lane == LiveLane.NOW.name }
+    val nextTasks = tasks.filter { it.lane == LiveLane.NEXT.name }
+        .sortedWith(compareByDescending<TaskEntity> { it.priority }.thenBy { it.sortOrder })
+    val waitingTasks = tasks.filter { it.lane == LiveLane.WAITING.name }
+    val prepGaps = tasks.filter {
+        it.lane != LiveLane.DONE.name && (it.prep.isNotBlank() || it.need.isNotBlank())
+    }
+
+    Column(modifier = pageModifier, verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        StationTargetHeader(selectedBoard, tasks, tr)
+
+        if (profile.homeTwoPane) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.Top,
             ) {
-                HomeActiveBlock(selectedBoard, tasks, profile, tr, onContinue, onLane)
-                HeroBoard(selectedBoard, profile, tr)
+                Column(
+                    modifier = Modifier.weight(7f),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                ) {
+                    DoNowCard(
+                        activeTask, selectedBoard.status == "PAUSED", nowMillis, tr,
+                        onPauseBoard, onToggleTimer, onDone, onContinue,
+                    )
+                    SectionHeader(
+                        title = tr("next", "Cooking timeline"),
+                        action = tr("live", "Open live"),
+                        onAction = onContinue,
+                    )
+                    TimelinePanel(nextTasks + waitingTasks, tr, onNow, onCheck)
+                }
+                Column(
+                    modifier = Modifier.weight(3f).widthIn(min = 292.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    RunningTimersPanel(tasks, nowMillis, tr, onToggleTimer)
+                    PrepGapsPanel(prepGaps, tr, onContinue)
+                    WaitingPanel(waitingTasks, tr, onCheck) { onLane(LiveLane.WAITING) }
+                }
             }
-            Column(
-                modifier = Modifier.weight(0.85f),
-                verticalArrangement = Arrangement.spacedBy(22.dp),
-            ) {
-                StartBlock(tr, onRepeat, onNew, onPaste)
-                RecentBlock(boards, tr, onAll, onOpenBoard)
+        } else {
+            DoNowCard(
+                activeTask, selectedBoard.status == "PAUSED", nowMillis, tr,
+                onPauseBoard, onToggleTimer, onDone, onContinue,
+            )
+            prepGaps.firstOrNull()?.let { PrepGapAlert(it, tr, onContinue) }
+            SectionHeader(
+                title = tr("next", "Next up"),
+                action = tr("live", "Open live"),
+                onAction = onContinue,
+            )
+            TimelinePanel(nextTasks.take(5) + waitingTasks.take(1), tr, onNow, onCheck)
+            if (waitingTasks.isNotEmpty()) {
+                SectionHeader(title = tr("wait", "Waiting"), trailing = waitingTasks.size.toString())
+                WaitingPanel(waitingTasks, tr, onCheck) { onLane(LiveLane.WAITING) }
             }
         }
-    } else {
-        Column(
-            modifier = contentModifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(if (profile.compactHeight) 12.dp else 20.dp),
-        ) {
-            HomeActiveBlock(selectedBoard, tasks, profile, tr, onContinue, onLane)
-            HeroBoard(selectedBoard, profile, tr)
-            StartBlock(tr, onRepeat, onNew, onPaste)
-            RecentBlock(boards, tr, onAll, onOpenBoard)
-        }
+
+        HomeUtilities(tr, onRepeat, onNew, onPaste)
+        RecentBoards(boards, selectedBoard.id, tr, onAll, onOpenBoard)
     }
 }
 
 @Composable
-fun HomeActiveBlock(
-    board: BoardEntity?,
-    tasks: List<TaskEntity>,
-    profile: KitchenWindowProfile,
+private fun StationTargetHeader(board: BoardEntity, tasks: List<TaskEntity>, tr: Translate) {
+    val done = tasks.count { it.lane == LiveLane.DONE.name }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(
+                timingLabel(board.timingMode, tr).uppercase(),
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                board.targetMinutesOfDay?.let(::formatMinutesOfDay) ?: tr("now", "Now"),
+                fontSize = 31.sp,
+                lineHeight = 36.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                targetSummary(board, done, tasks.size, tr),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = 13.sp,
+            )
+        }
+        StatusBadge(
+            if (board.status == "PAUSED") tr("pause", "Paused") else tr("onTrack", "On track")
+        )
+    }
+}
+
+private fun timingLabel(mode: String, tr: Translate): String = when (mode.uppercase()) {
+    "READY_BY" -> tr("readyBy", "Ready by")
+    "COOK_NOW" -> tr("now", "Cook now")
+    else -> tr("serveAt", "Serve at")
+}
+
+private fun targetSummary(board: BoardEntity, done: Int, total: Int, tr: Translate): String {
+    val target = board.targetMinutesOfDay
+        ?: return "$done / $total ${tr("done", "done")}"
+    val clock = Calendar.getInstance()
+    val current = clock.get(Calendar.HOUR_OF_DAY) * 60 + clock.get(Calendar.MINUTE)
+    val delta = target - current
+    val timing = if (delta >= 0) {
+        "$delta min ${tr("remaining", "remaining")}"
+    } else {
+        "${-delta} min ${tr("late", "past target")}"
+    }
+    return "$timing · $done / $total ${tr("done", "done")}"
+}
+
+@Composable
+private fun DoNowCard(
+    task: TaskEntity?,
+    boardPaused: Boolean,
+    nowMillis: Long,
     tr: Translate,
+    onPauseBoard: (Boolean) -> Unit,
+    onToggleTimer: (TaskEntity) -> Unit,
+    onDone: (TaskEntity) -> Unit,
     onContinue: () -> Unit,
-    onLane: (LiveLane) -> Unit,
 ) {
-    SectionHeader(
-        title = tr("active", "Active"),
-        trailing = if (board != null) tr("onTrack", "On track") else null,
-    )
-    WorkbenchCard {
-        if (board == null) {
-            Column(
-                modifier = Modifier.padding(18.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Text(
-                    tr("new", "New"),
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Black,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    tr("start", "Start"),
-                    fontSize = 21.sp,
-                    fontWeight = FontWeight.Black,
-                )
-                Text(
-                    tr("boardsStay", "Boards stay on this device"),
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp),
+        color = KitchenColors.OliveDeep,
+        contentColor = Color.White,
+    ) {
+        if (task == null) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(tr("now", "DO NOW"), color = KitchenColors.Sage, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                Text(tr("next", "Choose the next task"), fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                OutlinedButton(
+                    onClick = onContinue,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.4f)),
+                    shape = RoundedCornerShape(8.dp),
+                ) { Text(tr("live", "Open live"), fontWeight = FontWeight.Bold) }
             }
-            return@WorkbenchCard
+            return@Surface
         }
 
-        val done = tasks.count { it.lane == LiveLane.DONE.name }
-        val progress = if (tasks.isEmpty()) 0 else (done * 100 / tasks.size)
-        Column(Modifier.padding(18.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.padding(16.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
                 Column(Modifier.weight(1f)) {
-                    Text(
-                        board.name,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Black,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        board.area,
-                        fontSize = 21.sp,
-                        fontWeight = FontWeight.Black,
-                        maxLines = 2,
-                    )
-                    val time = board.targetMinutesOfDay?.let(::formatMinutesOfDay).orEmpty()
-                    val meta = listOfNotNull(
-                        time.takeIf { it.isNotBlank() },
-                        "${tasks.size} ${tr("tasks", "Tasks")}",
-                    ).joinToString(" · ")
-                    if (meta.isNotBlank()) {
-                        Text(
-                            meta,
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                    Text(tr("now", "DO NOW"), color = KitchenColors.Sage, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Text(task.name, fontSize = 22.sp, lineHeight = 26.sp, fontWeight = FontWeight.Bold, maxLines = 2)
+                    taskDetail(task).takeIf { it.isNotBlank() }?.let {
+                        Text(it, color = Color(0xFFD8E8E1), fontSize = 11.sp, maxLines = 2)
                     }
                 }
-                ProgressRing(progress)
-            }
-
-            Spacer(Modifier.height(16.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                LiveLane.entries.forEach { lane ->
-                    val count = tasks.count { it.lane == lane.name }
-                    StatusTile(
-                        modifier = Modifier.weight(1f),
-                        lane = lane,
-                        count = count,
-                        label = laneLabel(lane, tr),
-                        onClick = { onLane(lane) },
+                if (task.durationSeconds > 0L) {
+                    Text(
+                        formatDuration(taskRemaining(task, nowMillis)),
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
                     )
                 }
             }
             Spacer(Modifier.height(14.dp))
-            PrimaryButton(
-                text = tr("continue", "Continue"),
-                icon = Icons.Default.PlayArrow,
-                onClick = onContinue,
-                modifier = Modifier.fillMaxWidth(),
-                minHeight = if (profile.compactHeight) 52.dp else 58.dp,
-            )
-        }
-    }
-}
-
-@Composable
-fun HeroBoard(
-    board: BoardEntity?,
-    profile: KitchenWindowProfile,
-    tr: Translate,
-) {
-    WorkbenchCard(
-        shape = RoundedCornerShape(32.dp),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        if (profile.heroSideBySide) {
-            Row(Modifier.height(profile.heroHeight)) {
-                HeroCopy(
-                    board = board,
-                    profile = profile,
-                    tr = tr,
-                    modifier = Modifier.weight(1.02f).fillMaxHeight(),
-                )
-                BoardArt(Modifier.weight(0.98f).fillMaxHeight())
-            }
-        } else {
-            Column {
-                BoardArt(Modifier.fillMaxWidth().height(170.dp))
-                HeroCopy(
-                    board = board,
-                    profile = profile,
-                    tr = tr,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(
+                    onClick = {
+                        if (task.timerRunning) onToggleTimer(task) else onPauseBoard(!boardPaused)
+                    },
+                    modifier = Modifier.weight(1f).heightIn(min = 48.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.36f)),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Icon(if (boardPaused) Icons.Default.PlayArrow else Icons.Default.Pause, contentDescription = null)
+                    Spacer(Modifier.width(5.dp))
+                    Text(if (boardPaused) tr("resume", "Resume") else tr("pause", "Pause"), fontWeight = FontWeight.Bold)
+                }
+                Button(
+                    onClick = { onDone(task) },
+                    modifier = Modifier.weight(1f).heightIn(min = 48.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = KitchenColors.OliveDeep,
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Icon(Icons.Default.Check, contentDescription = null)
+                    Spacer(Modifier.width(5.dp))
+                    Text(tr("done", "Done"), fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
 }
 
-@Composable
-fun HeroCopy(
-    board: BoardEntity?,
-    profile: KitchenWindowProfile,
-    tr: Translate,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.padding(if (profile.width >= 600.dp) 28.dp else 18.dp),
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Text(
-            tr("today", "Today").uppercase(Locale.getDefault()),
-            fontSize = 11.sp,
-            fontWeight = FontWeight.Black,
-            color = MaterialTheme.colorScheme.primary,
-            letterSpacing = 1.2.sp,
-        )
-        Spacer(Modifier.height(7.dp))
-        Text(
-            board?.name ?: tr("new", "New"),
-            fontSize = profile.heroTitleSize,
-            lineHeight = profile.heroTitleSize,
-            fontWeight = FontWeight.Normal,
-            fontFamily = FontFamily.Serif,
-            maxLines = 2,
-        )
-        Spacer(Modifier.height(10.dp))
-        Text(
-            if (board != null) {
-                listOfNotNull(
-                    board.area.takeIf { it.isNotBlank() },
-                    board.targetMinutesOfDay?.let(::formatMinutesOfDay),
-                ).joinToString(" · ")
-            } else {
-                tr("boardsStay", "Boards stay on this device")
-            },
-            fontSize = 13.sp,
-            lineHeight = 20.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
+private fun taskRemaining(task: TaskEntity, nowMillis: Long): Long = when {
+    task.timerRunning -> max(0L, ((task.timerDeadlineAt ?: nowMillis) - nowMillis + 999L) / 1000L)
+    else -> task.remainingSeconds
 }
 
-@Composable
-fun BoardArt(modifier: Modifier = Modifier) {
-    Canvas(
-        modifier = modifier.background(
-            Brush.linearGradient(
-                colors = listOf(Color(0xFFDAD0BD), Color(0xFFB8B594))
-            )
-        )
-    ) {
-        val w = size.width
-        val h = size.height
-        drawOval(
-            color = Color(0xFF5D6941).copy(alpha = 0.48f),
-            topLeft = Offset(w * 0.08f, h * 0.12f),
-            size = Size(w * 0.32f, h * 0.35f),
-        )
-        drawOval(
-            color = Color(0xFFC7653A).copy(alpha = 0.86f),
-            topLeft = Offset(w * 0.48f, h * 0.22f),
-            size = Size(w * 0.22f, h * 0.25f),
-        )
-        drawOval(
-            color = Color(0xFFD1A044).copy(alpha = 0.9f),
-            topLeft = Offset(w * 0.66f, h * 0.48f),
-            size = Size(w * 0.15f, h * 0.18f),
-        )
-        drawOval(
-            color = Color(0xFF7F9655),
-            topLeft = Offset(w * 0.28f, h * 0.50f),
-            size = Size(w * 0.30f, h * 0.25f),
-        )
-        drawRoundRect(
-            color = Color(0xFFB98E60).copy(alpha = 0.72f),
-            topLeft = Offset(w * 0.09f, h * 0.72f),
-            size = Size(w * 0.42f, h * 0.12f),
-            cornerRadius = androidx.compose.ui.geometry.CornerRadius(18f, 18f),
-        )
-    }
-}
+private fun taskDetail(task: TaskEntity): String = listOfNotNull(
+    task.need.takeIf { it.isNotBlank() },
+    task.prep.takeIf { it.isNotBlank() },
+    task.durationSeconds.takeIf { it > 0 }?.let { "${it / 60} min" },
+).joinToString(" · ")
 
 @Composable
-fun ProgressRing(progress: Int) {
-    val trackColor = MaterialTheme.colorScheme.surfaceVariant
-    val progressColor = MaterialTheme.colorScheme.primary
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.size(66.dp)) {
-        Canvas(Modifier.fillMaxSize()) {
-            drawCircle(
-                color = trackColor,
-                style = Stroke(width = 7.dp.toPx()),
-            )
-            drawArc(
-                color = progressColor,
-                startAngle = -90f,
-                sweepAngle = progress.coerceIn(0, 100) * 3.6f,
-                useCenter = false,
-                style = Stroke(width = 7.dp.toPx()),
-            )
-        }
-        Text("$progress%", fontSize = 13.sp, fontWeight = FontWeight.Black)
-    }
-}
-
-@Composable
-fun StatusTile(
-    modifier: Modifier,
-    lane: LiveLane,
-    count: Int,
-    label: String,
-    onClick: () -> Unit,
-) {
-    val (background, foreground) = laneColors(lane)
+private fun PrepGapAlert(task: TaskEntity, tr: Translate, onClick: () -> Unit) {
     Surface(
-        modifier = modifier.heightIn(min = 58.dp).clickable(onClick = onClick),
-        shape = RoundedCornerShape(17.dp),
-        color = background,
-        contentColor = foreground,
-        border = BorderStroke(1.dp, foreground.copy(alpha = 0.12f)),
+        shape = RoundedCornerShape(8.dp),
+        color = KitchenColors.AmberSoft,
+        contentColor = KitchenColors.Amber,
     ) {
-        Column(
-            modifier = Modifier.padding(vertical = 9.dp, horizontal = 4.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("$count", fontSize = 18.sp, fontWeight = FontWeight.Black)
-            Text(label, fontSize = 10.sp, fontWeight = FontWeight.Bold, maxLines = 2)
+            Text(
+                "${tr("prep", "Prep gap")}: ${task.prep.ifBlank { task.need }}",
+                modifier = Modifier.weight(1f),
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+            )
+            TextButton(onClick = onClick) {
+                Text(tr("review", "Resolve"), color = KitchenColors.Amber, fontWeight = FontWeight.Bold)
+            }
         }
     }
 }
 
 @Composable
-fun StartBlock(
+private fun TimelinePanel(
+    tasks: List<TaskEntity>,
+    tr: Translate,
+    onNow: (TaskEntity) -> Unit,
+    onCheck: (TaskEntity) -> Unit,
+) {
+    WorkbenchCard(Modifier.fillMaxWidth()) {
+        if (tasks.isEmpty()) {
+            Text(
+                tr("done", "Nothing else is queued"),
+                modifier = Modifier.padding(16.dp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            return@WorkbenchCard
+        }
+        Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 2.dp)) {
+            tasks.forEachIndexed { index, task ->
+                TimelineRow(task, tr, onNow, onCheck)
+                if (index != tasks.lastIndex) HorizontalDivider(color = KitchenColors.Line)
+            }
+        }
+    }
+}
+
+@Composable
+private fun TimelineRow(
+    task: TaskEntity,
+    tr: Translate,
+    onNow: (TaskEntity) -> Unit,
+    onCheck: (TaskEntity) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Box(
+            modifier = Modifier.size(12.dp).background(
+                if (task.lane == LiveLane.WAITING.name) KitchenColors.Amber else KitchenColors.Olive,
+                CircleShape,
+            )
+        )
+        Column(Modifier.weight(1f)) {
+            Text(
+                task.name,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            taskDetail(task).takeIf { it.isNotBlank() }?.let {
+                Text(it, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+            }
+        }
+        OutlinedButton(
+            onClick = { if (task.lane == LiveLane.WAITING.name) onCheck(task) else onNow(task) },
+            modifier = Modifier.heightIn(min = 40.dp),
+            shape = RoundedCornerShape(7.dp),
+            contentPadding = PaddingValues(horizontal = 12.dp),
+        ) {
+            Text(
+                if (task.lane == LiveLane.WAITING.name) tr("check", "Check") else tr("now", "Start"),
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
+}
+
+@Composable
+private fun RunningTimersPanel(
+    tasks: List<TaskEntity>,
+    nowMillis: Long,
+    tr: Translate,
+    onToggleTimer: (TaskEntity) -> Unit,
+) {
+    val timed = tasks.filter {
+        it.timerRunning || (it.lane == LiveLane.NOW.name && it.durationSeconds > 0)
+    }.take(3)
+    SupportPanel(
+        title = tr("timers", "Running timers"),
+        badge = "${timed.count { it.timerRunning }} ${tr("active", "active")}",
+    ) {
+        if (timed.isEmpty()) Text("—", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        timed.forEachIndexed { index, task ->
+            Row(
+                modifier = Modifier.fillMaxWidth().clickable { onToggleTimer(task) }.padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(Modifier.weight(1f)) {
+                    Text(task.name, fontSize = 12.sp, fontWeight = FontWeight.Bold, maxLines = 2)
+                    Text(
+                        if (task.timerRunning) tr("pause", "Tap to pause") else tr("start", "Tap to start"),
+                        fontSize = 10.sp,
+                        color = KitchenColors.Muted,
+                    )
+                }
+                Text(formatDuration(taskRemaining(task, nowMillis)), fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            }
+            if (index != timed.lastIndex) HorizontalDivider(color = KitchenColors.Line)
+        }
+    }
+}
+
+@Composable
+private fun PrepGapsPanel(tasks: List<TaskEntity>, tr: Translate, onContinue: () -> Unit) {
+    SupportPanel(
+        title = tr("prep", "Prep gaps"),
+        badge = "${tasks.size} ${tr("remaining", "left")}",
+    ) {
+        if (tasks.isEmpty()) Text("—", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        tasks.take(4).forEach { task ->
+            Row(
+                modifier = Modifier.fillMaxWidth().clickable(onClick = onContinue).padding(vertical = 6.dp),
+                verticalAlignment = Alignment.Top,
+            ) {
+                Surface(
+                    modifier = Modifier.padding(top = 2.dp).size(16.dp),
+                    shape = RoundedCornerShape(2.dp),
+                    border = BorderStroke(1.dp, KitchenColors.Muted),
+                    color = Color.Transparent,
+                ) {}
+                Spacer(Modifier.width(8.dp))
+                Text(task.prep.ifBlank { task.need }, fontSize = 11.sp, maxLines = 3)
+            }
+        }
+    }
+}
+
+@Composable
+private fun WaitingPanel(
+    tasks: List<TaskEntity>,
+    tr: Translate,
+    onCheck: (TaskEntity) -> Unit,
+    onOpen: () -> Unit,
+) {
+    SupportPanel(title = tr("wait", "Waiting check"), badge = tasks.size.toString()) {
+        val task = tasks.firstOrNull()
+        if (task == null) {
+            Text("—", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        } else {
+            Surface(
+                shape = RoundedCornerShape(8.dp),
+                color = KitchenColors.AmberSoft,
+                contentColor = KitchenColors.Amber,
+            ) {
+                Column(Modifier.fillMaxWidth().padding(10.dp)) {
+                    Text(task.name, fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 2)
+                    if (task.durationSeconds > 0L) {
+                        Text(formatDuration(task.remainingSeconds), fontSize = 10.sp)
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                OutlinedButton(
+                    onClick = { onCheck(task) },
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Text(tr("check", "Check now"), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                }
+                OutlinedButton(
+                    onClick = onOpen,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Text(tr("review", "Review"), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SupportPanel(
+    title: String,
+    badge: String,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    WorkbenchCard(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(14.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    title,
+                    modifier = Modifier.weight(1f),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                )
+                StatusBadge(badge)
+            }
+            Spacer(Modifier.height(8.dp))
+            content()
+        }
+    }
+}
+
+@Composable
+private fun HomeUtilities(
     tr: Translate,
     onRepeat: () -> Unit,
     onNew: () -> Unit,
     onPaste: () -> Unit,
 ) {
-    SectionHeader(tr("start", "Start"))
-    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        StartCard(
-            modifier = Modifier.weight(1f),
-            label = tr("repeat", "Repeat"),
-            icon = Icons.Default.Refresh,
-            emphasized = true,
-            onClick = onRepeat,
-        )
-        StartCard(
-            modifier = Modifier.weight(1f),
-            label = tr("new", "New"),
-            icon = Icons.Default.Add,
-            onClick = onNew,
-        )
-    }
-    Spacer(Modifier.height(10.dp))
-    OutlinedButton(
-        onClick = onPaste,
-        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
-        shape = RoundedCornerShape(17.dp),
-    ) {
-        Icon(Icons.Default.ContentPaste, contentDescription = null)
-        Spacer(Modifier.width(8.dp))
-        Text(tr("paste", "Paste"), fontWeight = FontWeight.Black)
+    SectionHeader(tr("start", "Start another board"))
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        UtilityButton(tr("repeat", "Repeat"), Icons.Default.Refresh, onRepeat, Modifier.weight(1f))
+        UtilityButton(tr("new", "New"), Icons.Default.Add, onNew, Modifier.weight(1f))
+        UtilityButton(tr("paste", "Paste"), Icons.Default.ContentPaste, onPaste, Modifier.weight(1f))
     }
 }
 
 @Composable
-fun StartCard(
-    modifier: Modifier,
+private fun UtilityButton(
     label: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    emphasized: Boolean = false,
+    icon: ImageVector,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Surface(
-        modifier = modifier.heightIn(min = 86.dp).clickable(onClick = onClick),
-        shape = RoundedCornerShape(20.dp),
-        color = if (emphasized) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f)
-        else MaterialTheme.colorScheme.surface,
-        border = BorderStroke(
-            1.dp,
-            if (emphasized) MaterialTheme.colorScheme.primary.copy(alpha = 0.28f)
-            else MaterialTheme.colorScheme.outline.copy(alpha = 0.55f),
-        ),
-        shadowElevation = 3.dp,
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier.heightIn(min = 52.dp),
+        shape = RoundedCornerShape(8.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp),
     ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Surface(
-                modifier = Modifier.size(38.dp),
-                shape = RoundedCornerShape(14.dp),
-                color = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(icon, contentDescription = null, modifier = Modifier.size(22.dp))
-                }
-            }
-            Spacer(Modifier.width(12.dp))
-            Text(
-                label,
-                modifier = Modifier.weight(1f),
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Black,
-                maxLines = 2,
-            )
-        }
+        Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(5.dp))
+        Text(label, fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 2)
     }
 }
 
 @Composable
-fun RecentBlock(
+private fun RecentBoards(
     boards: List<BoardEntity>,
+    selectedId: String,
     tr: Translate,
     onAll: () -> Unit,
     onOpen: (String) -> Unit,
 ) {
-    SectionHeader(
-        title = tr("recent", "Recent"),
-        action = tr("all", "All"),
-        onAction = onAll,
-    )
+    val recent = boards.filter { it.id != selectedId }.take(3)
+    if (recent.isEmpty()) return
+    SectionHeader(tr("recent", "Recent"), action = tr("all", "All"), onAction = onAll)
     WorkbenchCard {
-        if (boards.isEmpty()) {
-            Text(
-                tr("boardsStay", "Boards stay on this device"),
-                modifier = Modifier.padding(18.dp),
-                fontSize = 13.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        } else {
-            boards.take(3).forEachIndexed { index, board ->
-                BoardListRow(board = board, tr = tr, onClick = { onOpen(board.id) })
-                if (index < minOf(boards.size, 3) - 1) {
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.45f))
+        Column {
+            recent.forEachIndexed { index, board ->
+                BoardListRow(board, tr) { onOpen(board.id) }
+                if (index != recent.lastIndex) HorizontalDivider(color = KitchenColors.Line)
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyStation(
+    boards: List<BoardEntity>,
+    profile: KitchenWindowProfile,
+    tr: Translate,
+    onNew: () -> Unit,
+    onPaste: () -> Unit,
+    onAll: () -> Unit,
+    onOpenBoard: (String) -> Unit,
+    modifier: Modifier,
+) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Text(tr("home", "Station"), fontSize = profile.pageTitleSize, fontWeight = FontWeight.Bold)
+        WorkbenchCard(Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Surface(
+                    modifier = Modifier.size(46.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    color = KitchenColors.OliveSoft,
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(Icons.Default.Kitchen, contentDescription = null, tint = KitchenColors.Olive)
+                    }
+                }
+                Text(tr("new", "Start your first board"), fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    tr("boardsStay", "Boards stay on this device"),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 13.sp,
+                )
+                Button(
+                    onClick = onNew,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = null)
+                    Spacer(Modifier.width(6.dp))
+                    Text(tr("new", "New board"), fontWeight = FontWeight.Bold)
+                }
+                OutlinedButton(
+                    onClick = onPaste,
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp),
+                    shape = RoundedCornerShape(8.dp),
+                ) {
+                    Icon(Icons.Default.ContentPaste, contentDescription = null)
+                    Spacer(Modifier.width(6.dp))
+                    Text(tr("paste", "Paste tasks"), fontWeight = FontWeight.Bold)
                 }
             }
         }
+        if (boards.isNotEmpty()) {
+            SectionHeader(tr("recent", "Recent"), action = tr("all", "All"), onAction = onAll)
+            WorkbenchCard {
+                Column {
+                    boards.take(4).forEachIndexed { index, board ->
+                        BoardListRow(board, tr) { onOpenBoard(board.id) }
+                        if (index != minOf(boards.lastIndex, 3)) HorizontalDivider(color = KitchenColors.Line)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BoardArt(modifier: Modifier = Modifier) {
+    Box(modifier.background(KitchenColors.OliveSoft), contentAlignment = Alignment.Center) {
+        Icon(
+            Icons.Default.Kitchen,
+            contentDescription = null,
+            tint = KitchenColors.Olive,
+            modifier = Modifier.size(32.dp),
+        )
     }
 }

@@ -11,26 +11,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object KitchenColors {
-    val Canvas = Color(0xFFF5F0E8)
-    val Canvas2 = Color(0xFFEDE6DA)
-    val Surface = Color(0xFFFFFDF9)
-    val SurfaceSoft = Color(0xFFF2ECE2)
-    val Ink = Color(0xFF1E211B)
-    val Ink2 = Color(0xFF464940)
-    val Muted = Color(0xFF77796F)
-    val Line = Color(0xFFDED7CB)
-    val Olive = Color(0xFF4D5B27)
-    val OliveDeep = Color(0xFF34401B)
-    val OliveSoft = Color(0xFFDCE4C4)
-    val Sage = Color(0xFF8EA376)
-    val Terra = Color(0xFFB95635)
-    val TerraDeep = Color(0xFF8E3B27)
-    val TerraSoft = Color(0xFFF2D8CE)
-    val Amber = Color(0xFFC58A29)
-    val AmberSoft = Color(0xFFF4E4BE)
-    val Teal = Color(0xFF3F726D)
-    val TealSoft = Color(0xFFD5E6E2)
-    val Success = Color(0xFF577A45)
+    val Canvas = Color(0xFFF6F9F7)
+    val Canvas2 = Color(0xFFE7ECE9)
+    val Surface = Color(0xFFFFFFFF)
+    val SurfaceSoft = Color(0xFFF0F4F2)
+    val Ink = Color(0xFF17201C)
+    val Ink2 = Color(0xFF4B5551)
+    val Muted = Color(0xFF68716D)
+    val Line = Color(0xFFD9DFDC)
+    val Olive = Color(0xFF176B4D)
+    val OliveDeep = Color(0xFF123D30)
+    val OliveSoft = Color(0xFFDDF1E7)
+    val Sage = Color(0xFF78A890)
+    val Terra = Color(0xFF963A3F)
+    val TerraDeep = Color(0xFF74282D)
+    val TerraSoft = Color(0xFFF7E3E4)
+    val Amber = Color(0xFF805B00)
+    val AmberSoft = Color(0xFFFFF0C4)
+    val Teal = Color(0xFF315FAE)
+    val TealSoft = Color(0xFFEDF3FF)
+    val Success = Color(0xFF176B4D)
 
 }
 
@@ -99,10 +99,10 @@ fun kitchenWindowProfile(width: Dp, height: Dp, fontScale: Float = 1f): KitchenW
     val maxWidth = if (width >= 1200.dp) 1440.dp else 0.dp
     val heroTitle = when {
         compactHeight -> 29.sp
-        width >= 1200.dp && !compactHeight -> 52.sp
-        width >= 840.dp && !compactHeight -> 38.sp
-        width >= 600.dp -> 36.sp
-        else -> 29.sp
+        width >= 1200.dp && !compactHeight -> 36.sp
+        width >= 840.dp && !compactHeight -> 34.sp
+        width >= 600.dp -> 32.sp
+        else -> 30.sp
     }
     val heroHeight = when {
         compactHeight -> 230.dp
@@ -124,7 +124,7 @@ fun kitchenWindowProfile(width: Dp, height: Dp, fontScale: Float = 1f): KitchenW
         topBarHeight = if (compactHeight) 56.dp else 64.dp,
         heroHeight = heroHeight,
         heroTitleSize = heroTitle,
-        pageTitleSize = if (width >= 840.dp && !compactHeight) 32.sp else 29.sp,
+        pageTitleSize = if (width >= 840.dp && !compactHeight) 28.sp else 25.sp,
         touchTarget = 52.dp,
     )
 }

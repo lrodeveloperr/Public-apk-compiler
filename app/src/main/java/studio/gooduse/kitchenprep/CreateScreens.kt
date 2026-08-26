@@ -67,10 +67,10 @@ fun CreateScreen(
         }
 
         Surface(
-            shape = RoundedCornerShape(18.dp),
+            shape = RoundedCornerShape(8.dp),
             color = MaterialTheme.colorScheme.surface.copy(alpha = 0.98f),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
-            shadowElevation = 6.dp,
+            shadowElevation = 0.dp,
         ) {
             Row(
                 modifier = Modifier.padding(9.dp),
@@ -79,7 +79,7 @@ fun CreateScreen(
                 OutlinedButton(
                     onClick = onBack,
                     modifier = Modifier.weight(0.7f).heightIn(min = 52.dp),
-                    shape = RoundedCornerShape(15.dp),
+                    shape = RoundedCornerShape(8.dp),
                 ) {
                     Text(tr("back", "Back"), fontWeight = FontWeight.Black, maxLines = 2)
                 }
@@ -87,7 +87,7 @@ fun CreateScreen(
                     onClick = onNext,
                     enabled = canAdvance,
                     modifier = Modifier.weight(1.3f).heightIn(min = 52.dp),
-                    shape = RoundedCornerShape(15.dp),
+                    shape = RoundedCornerShape(8.dp),
                 ) {
                     Text(
                         if (step == 3) tr("start", "Start") else tr("next", "Next"),
@@ -200,7 +200,7 @@ fun NativeTimeField(
     OutlinedButton(
         onClick = { show = true },
         modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(8.dp),
     ) {
         Icon(Icons.Default.AccessTime, contentDescription = null)
         Spacer(Modifier.width(8.dp))
@@ -252,7 +252,7 @@ fun AreaField(
         OutlinedButton(
             onClick = { expanded = true },
             modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp),
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(8.dp),
         ) {
             Text(
                 "${tr("area", "Area")} · ${options.firstOrNull { it.first == current }?.second ?: current}",
@@ -289,7 +289,7 @@ fun TasksStep(
             OutlinedButton(
                 onClick = onAddTask,
                 modifier = Modifier.heightIn(min = 48.dp),
-                shape = RoundedCornerShape(15.dp),
+                shape = RoundedCornerShape(8.dp),
             ) {
                 Icon(Icons.Default.Add, contentDescription = null)
                 Spacer(Modifier.width(4.dp))
